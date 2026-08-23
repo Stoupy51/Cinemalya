@@ -6,7 +6,7 @@
 [![Discord](https://img.shields.io/discord/1216400498488377467?label=Discord&logo=discord)](https://discord.gg/anxzu6rA9F)
 [![Powered by StewBeet](https://img.shields.io/badge/Powered%20by-StewBeet-5865F2?colorA=%23E00000&colorB=%2300A000)](https://stewbeet.paralya.fr/)
 
-🎥 A Minecraft data pack library for flying players through cinematic camera moves.
+🎥 A Minecraft datapack library for flying players through cinematic camera moves.
 
 * ✨ Sweep a player anywhere along a spline, with easing, arcs and particle trails.
 * 🎞️ A ready-made title card intro, and signals to hook your own logic in.

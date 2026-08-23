@@ -28,7 +28,7 @@ modrinth_config: JsonDict = {
 	"project_name": cfg.name,
 	"version": cfg.version,
 	"authors": cfg.author,
-	"summary": "Minecraft Datapack Library for cinematics in an optimized and general way",
+	"summary": "A Minecraft datapack library for flying players through cinematic camera moves.",
 	"description_markdown": read_file(f"{cfg.directory}/README.md"),
 	"version_type": "release",
 	"build_folder": cfg.output,
@@ -45,7 +45,7 @@ upload_to_smithed(credentials, smithed_config, changelog)
 
 # Upload to PlanetMinecraft
 pmc_config: JsonDict = {
-	"project_url": "https://www.planetminecraft.com/account/manage/data-packs/6915266/",
+	"project_url": "https://www.planetminecraft.com/account/manage/data-packs/7029057/",
 	"version": cfg.version,
 }
 upload_to_pmc(pmc_config, changelog)
