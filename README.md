@@ -19,8 +19,7 @@
 📦 Embedded library: package it inside your datapack rather than shipping it separately.
 Requires [LanternLoad](https://github.com/LanternMC/load) and [Bookshelf Spline](https://docs.mcbookshelf.dev/en/latest/modules/spline.html).
 
-<!-- VIDEO: drag the .mp4 into the GitHub web editor right here, then delete this comment and the link below -->
-🎥 [Watch the showcase on YouTube](https://www.youtube.com/watch?v=FtVcRR-iO80)
+https://github.com/user-attachments/assets/41fed243-05f5-457f-afa7-ba6c6ea59dee
 
 <br>
 
