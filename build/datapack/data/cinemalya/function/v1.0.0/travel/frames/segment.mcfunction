@@ -14,6 +14,8 @@ function cinemalya:v1.0.0/travel/frames/read_duration with storage cinemalya:wor
 scoreboard players operation #seg_frames cinemalya.data /= #smoothing cinemalya.data
 execute if score #seg_frames cinemalya.data matches ..0 run scoreboard players set #seg_frames cinemalya.data 1
 
+function cinemalya:v1.0.0/travel/frames/segment_ease
+
 scoreboard players set #f cinemalya.data 1
 function cinemalya:v1.0.0/travel/frames/frame_loop
 

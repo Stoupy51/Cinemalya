@@ -11,6 +11,8 @@
 #
 
 data modify storage cinemalya:work frames set value {points:[],rotations:[]}
+scoreboard players operation #last_seg cinemalya.data = #segments cinemalya.data
+scoreboard players remove #last_seg cinemalya.data 1
 scoreboard players set #seg cinemalya.data 0
 function cinemalya:v1.0.0/travel/frames/segment_loop
 

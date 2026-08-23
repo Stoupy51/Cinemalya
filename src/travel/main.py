@@ -69,7 +69,7 @@ def write_defaults(ns: str) -> None:
 	write_versioned_function("travel/defaults", f"""
 #> defaults
 #
-# @output score		#duration, #smoothing, #mode, #ease {ns}.data
+# @output score		#duration, #smoothing, #mode, #ease_path {ns}.data
 #
 # @description		Complete the caller's arguments so the rest of the pipeline never tests for absence.
 #
@@ -82,11 +82,11 @@ execute unless data storage {ns}:work args.arc_side run data modify storage {ns}
 execute unless data storage {ns}:work args.arc_height run data modify storage {ns}:work args.arc_height set value 20.0
 execute unless data storage {ns}:work args.tags run data modify storage {ns}:work args.tags set value []
 
-## Easing curve
-scoreboard players set #ease {ns}.data 0
-execute if data storage {ns}:work args{{ease:"ease_in"}} run scoreboard players set #ease {ns}.data 1
-execute if data storage {ns}:work args{{ease:"ease_out"}} run scoreboard players set #ease {ns}.data 2
-execute if data storage {ns}:work args{{ease:"ease_in_out"}} run scoreboard players set #ease {ns}.data 3
+## Easing curve asked for by the whole path, spread across its segments later on
+scoreboard players set #ease_path {ns}.data 0
+execute if data storage {ns}:work args{{ease:"ease_in"}} run scoreboard players set #ease_path {ns}.data 1
+execute if data storage {ns}:work args{{ease:"ease_out"}} run scoreboard players set #ease_path {ns}.data 2
+execute if data storage {ns}:work args{{ease:"ease_in_out"}} run scoreboard players set #ease_path {ns}.data 3
 
 ## Full precision rotation packets, on unless the caller opted out
 scoreboard players set #precise {ns}.data 1

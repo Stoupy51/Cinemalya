@@ -15,6 +15,8 @@ def write_frames(ns: str, version: str) -> None:
 #
 
 data modify storage {ns}:work frames set value {{points:[],rotations:[]}}
+scoreboard players operation #last_seg {ns}.data = #segments {ns}.data
+scoreboard players remove #last_seg {ns}.data 1
 scoreboard players set #seg {ns}.data 0
 function {ns}:v{version}/travel/frames/segment_loop
 """)
@@ -37,6 +39,8 @@ function {ns}:v{version}/travel/frames/read_duration with storage {ns}:work sel
 scoreboard players operation #seg_frames {ns}.data /= #smoothing {ns}.data
 execute if score #seg_frames {ns}.data matches ..0 run scoreboard players set #seg_frames {ns}.data 1
 
+function {ns}:v{version}/travel/frames/segment_ease
+
 scoreboard players set #f {ns}.data 1
 function {ns}:v{version}/travel/frames/frame_loop
 
@@ -46,6 +50,45 @@ function {ns}:v{version}/travel/frames/segment_loop
 
 	write_versioned_function("travel/frames/read_duration", f"""
 $execute store result score #seg_frames {ns}.data run data get storage {ns}:work args.waypoints[$(i)].duration
+""")
+
+	write_versioned_function("travel/frames/segment_ease", f"""
+#> segment_ease
+#
+# @input score		#ease_path {ns}.data : the easing asked for by the whole path
+# @output score		#ease {ns}.data : the easing this one segment runs
+#
+# @description		Easing bends progress from 0 to 1, so running the path's curve inside every segment
+#					would bring the camera to a near stop on each intermediate waypoint. The path's
+#					curve therefore lands on its ends only: it accelerates away from the first
+#					waypoint, cruises through the middle ones, and settles onto the last.
+#					A waypoint carrying its own `ease` overrides that for the segment arriving at it.
+#
+
+## Middle segments cruise, the ends accelerate away from rest and settle back onto it
+scoreboard players set #ease {ns}.data 0
+execute if score #seg {ns}.data matches 0 if score #ease_path {ns}.data matches 1 run scoreboard players set #ease {ns}.data 4
+execute if score #seg {ns}.data matches 0 if score #ease_path {ns}.data matches 3 run scoreboard players set #ease {ns}.data 4
+execute if score #seg {ns}.data = #last_seg {ns}.data if score #ease_path {ns}.data matches 2 run scoreboard players set #ease {ns}.data 5
+execute if score #seg {ns}.data = #last_seg {ns}.data if score #ease_path {ns}.data matches 3 run scoreboard players set #ease {ns}.data 5
+
+## A single segment is both ends at once, so it runs the path's curve whole
+execute if score #segments {ns}.data matches 1 run scoreboard players operation #ease {ns}.data = #ease_path {ns}.data
+
+## The waypoint this segment arrives at has the final say
+function {ns}:v{version}/travel/frames/read_ease with storage {ns}:work sel
+""")
+
+	write_versioned_function("travel/frames/read_ease", f"""
+#> read_ease
+#
+# @input macro		i : int - the waypoint this segment arrives at
+#
+
+$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"linear"}} run scoreboard players set #ease {ns}.data 0
+$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"ease_in"}} run scoreboard players set #ease {ns}.data 1
+$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"ease_out"}} run scoreboard players set #ease {ns}.data 2
+$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"ease_in_out"}} run scoreboard players set #ease {ns}.data 3
 """)
 
 	write_versioned_function("travel/frames/frame_loop", f"""
@@ -98,6 +141,47 @@ $data modify storage {ns}:work frames.rotations append from storage {ns}:work ro
 execute if score #ease {ns}.data matches 1 run function {ns}:v{version}/travel/frames/ease_in
 execute if score #ease {ns}.data matches 2 run function {ns}:v{version}/travel/frames/ease_out
 execute if score #ease {ns}.data matches 3 run function {ns}:v{version}/travel/frames/ease_in_out
+execute if score #ease {ns}.data matches 4 run function {ns}:v{version}/travel/frames/ease_in_to_cruise
+execute if score #ease {ns}.data matches 5 run function {ns}:v{version}/travel/frames/ease_out_of_cruise
+""")
+
+	write_versioned_function("travel/frames/ease_in_to_cruise", f"""
+#> ease_in_to_cruise
+#
+# @description		2t^2 - t^3: starts at rest like ease_in, but arrives at exactly the speed a linear
+#					segment travels at, so the waypoint it hands over on shows no change of pace.
+#
+
+scoreboard players operation #q {ns}.data = #p {ns}.data
+scoreboard players operation #q {ns}.data *= #p {ns}.data
+scoreboard players operation #q {ns}.data /= #10000 {ns}.data
+scoreboard players operation #r {ns}.data = #q {ns}.data
+scoreboard players operation #r {ns}.data *= #p {ns}.data
+scoreboard players operation #r {ns}.data /= #10000 {ns}.data
+scoreboard players operation #p {ns}.data = #q {ns}.data
+scoreboard players operation #p {ns}.data *= #2 {ns}.data
+scoreboard players operation #p {ns}.data -= #r {ns}.data
+""")
+
+	write_versioned_function("travel/frames/ease_out_of_cruise", f"""
+#> ease_out_of_cruise
+#
+# @description		The mirror of ease_in_to_cruise: leaves its waypoint at cruising speed and settles
+#					to rest, so the handover into it is seamless too.
+#
+
+scoreboard players operation #u {ns}.data = #10000 {ns}.data
+scoreboard players operation #u {ns}.data -= #p {ns}.data
+scoreboard players operation #q {ns}.data = #u {ns}.data
+scoreboard players operation #q {ns}.data *= #u {ns}.data
+scoreboard players operation #q {ns}.data /= #10000 {ns}.data
+scoreboard players operation #r {ns}.data = #q {ns}.data
+scoreboard players operation #r {ns}.data *= #u {ns}.data
+scoreboard players operation #r {ns}.data /= #10000 {ns}.data
+scoreboard players operation #q {ns}.data *= #2 {ns}.data
+scoreboard players operation #q {ns}.data -= #r {ns}.data
+scoreboard players operation #p {ns}.data = #10000 {ns}.data
+scoreboard players operation #p {ns}.data -= #q {ns}.data
 """)
 
 	write_versioned_function("travel/frames/ease_in", f"""

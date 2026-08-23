@@ -33,7 +33,7 @@ When you launch one:
 2. 🔄 Yaws are **unwrapped**, so a camera going from `170` to `-170` turns 20 degrees the short way instead of spinning 340 the long way.
 3. 📐 The waypoints become **control points**. Two of them get a bezier bending through a raised midpoint; more get a catmull-rom passing through each one.
 4. 〰️ Bookshelf samples that curve into a **dense polyline**, four times finer than the frames that will be picked out of it.
-5. 🎚️ Each segment then emits exactly as many **frames** as its own duration buys, choosing which sample to land on through the easing curve.
+5. 🎚️ Each segment then emits exactly as many **frames** as its own duration buys, choosing which sample to land on through the easing curve. A path-level curve lands on the path's ends, so intermediate waypoints are passed at cruising speed rather than eased through one by one.
 6. ▶️ Playback pops one frame every `smoothing` ticks. `teleport_duration` on the display makes the client interpolate the gaps, so a step every 2 or 3 ticks still looks continuous.
 
 Doing all the work at launch is what keeps this cheap: a running cinematic costs one macro and two NBT reads per step,
@@ -95,6 +95,37 @@ execute as @s run function #cinemalya:v1/launch_path {with:{ease:"ease_in_out",w
 Every value goes through a scoreboard on the way in, so plain integers work just as well as decimals.
 Mix the two forms freely: `args` is expanded into `pos` and `rot` before anything else looks at the waypoint.
 
+### Easing a path
+
+A path-level `ease` describes **the whole path**, not each hop. It accelerates away from the first waypoint
+and settles onto the last, passing every waypoint in between at cruising speed with no change of pace:
+
+```mcfunction
+execute as @s run function #cinemalya:v1/launch_path {with:{duration:80,ease:"ease_in_out",waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16]},{args:[-72,68,20,92,-11.7]}]}}
+```
+
+The end segments use a curve that arrives at exactly the speed a linear segment travels at, so there is no
+visible step where an eased end meets a cruising middle, however many waypoints the path has.
+
+### Easing a single hop
+
+Give a waypoint its own `ease` to override the path's for the segment **arriving at** it. Like `duration`,
+it describes the hop that ends on that waypoint, so `waypoints[0]` never carries one:
+
+```mcfunction
+execute as @s run function #cinemalya:v1/launch_path {with:{duration:80,waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16],ease:"ease_out"},{args:[-72,68,20,92,-11.7],ease:"ease_in"}]}}
+```
+
+That one drifts to a near stop on the middle waypoint, holds the beat, then accelerates away to the last:
+a deliberate pause on a landmark. Per-waypoint easing always runs the literal curve over that one hop,
+which is exactly what you want when the pause is the point.
+
+Combine it with `duration` to control how long the beat lasts:
+
+```mcfunction
+execute as @s run function #cinemalya:v1/launch_path {with:{waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16,55],ease:"ease_out"},{args:[-72,68,20,92,-11.7,25],ease:"ease_in"}]}}
+```
+
 ## 🛑 `#cinemalya:v1/stop`
 
 End the cinematic the player is riding, if any.
@@ -144,7 +175,7 @@ Runs **as and at the player**, once they have been set down and given their game
 | `duration` | int | `60` | Total length of the travel, in ticks |
 | `smoothing` | int | `2` | Ticks between frames. Higher is cheaper and softer, lower is sharper |
 | `delay` | int | `0` | Ticks to hold still before the camera starts moving |
-| `ease` | string | `"linear"` | `"linear"`, `"ease_in"`, `"ease_out"`, `"ease_in_out"` |
+| `ease` | string | `"linear"` | `"linear"`, `"ease_in"`, `"ease_out"`, `"ease_in_out"`. On a path it shapes the whole travel; on a waypoint it shapes only the hop arriving there |
 | `spline` | string | auto | `"bezier"` or `"catmull_rom"`. Defaults to bezier for two waypoints, catmull-rom beyond |
 | `arc_side` | float | `0.0` | How far to swing sideways, as a fraction of half the distance. `0` flies straight |
 | `arc_height` | float | `20.0` | How far above the higher end the arc peaks |

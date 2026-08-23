@@ -5,7 +5,7 @@
 #			cinemalya:v1.0.0/travel/from_entity
 #			cinemalya:v1.0.0/travel/from_waypoints
 #
-# @output score		#duration, #smoothing, #mode, #ease cinemalya.data
+# @output score		#duration, #smoothing, #mode, #ease_path cinemalya.data
 # 
 # @description		Complete the caller's arguments so the rest of the pipeline never tests for absence.
 #
@@ -18,11 +18,11 @@ execute unless data storage cinemalya:work args.arc_side run data modify storage
 execute unless data storage cinemalya:work args.arc_height run data modify storage cinemalya:work args.arc_height set value 20.0
 execute unless data storage cinemalya:work args.tags run data modify storage cinemalya:work args.tags set value []
 
-## Easing curve
-scoreboard players set #ease cinemalya.data 0
-execute if data storage cinemalya:work args{ease:"ease_in"} run scoreboard players set #ease cinemalya.data 1
-execute if data storage cinemalya:work args{ease:"ease_out"} run scoreboard players set #ease cinemalya.data 2
-execute if data storage cinemalya:work args{ease:"ease_in_out"} run scoreboard players set #ease cinemalya.data 3
+## Easing curve asked for by the whole path, spread across its segments later on
+scoreboard players set #ease_path cinemalya.data 0
+execute if data storage cinemalya:work args{ease:"ease_in"} run scoreboard players set #ease_path cinemalya.data 1
+execute if data storage cinemalya:work args{ease:"ease_out"} run scoreboard players set #ease_path cinemalya.data 2
+execute if data storage cinemalya:work args{ease:"ease_in_out"} run scoreboard players set #ease_path cinemalya.data 3
 
 ## Full precision rotation packets, on unless the caller opted out
 scoreboard players set #precise cinemalya.data 1

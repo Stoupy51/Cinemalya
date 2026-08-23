@@ -12,4 +12,6 @@
 execute if score #ease cinemalya.data matches 1 run function cinemalya:v1.0.0/travel/frames/ease_in
 execute if score #ease cinemalya.data matches 2 run function cinemalya:v1.0.0/travel/frames/ease_out
 execute if score #ease cinemalya.data matches 3 run function cinemalya:v1.0.0/travel/frames/ease_in_out
+execute if score #ease cinemalya.data matches 4 run function cinemalya:v1.0.0/travel/frames/ease_in_to_cruise
+execute if score #ease cinemalya.data matches 5 run function cinemalya:v1.0.0/travel/frames/ease_out_of_cruise
 
