@@ -18,6 +18,9 @@ scoreboard players operation #share cinemalya.data = #duration cinemalya.data
 scoreboard players operation #share cinemalya.data /= #segments cinemalya.data
 execute if score #share cinemalya.data matches ..0 run scoreboard players set #share cinemalya.data 1
 
+## Relative waypoint coordinates resolve against wherever the caller was executing
+function cinemalya:v1.0.0/travel/waypoints/open_anchor
+
 ## Seed the running rotation, so a waypoint without one simply keeps the previous heading
 data modify storage cinemalya:work last_rot set value [0.0f,0.0f]
 execute unless score #mode cinemalya.data matches 2 run data modify storage cinemalya:work last_rot set from entity @s Rotation
@@ -26,4 +29,5 @@ execute store result score #last_yaw cinemalya.data run data get storage cinemal
 
 scoreboard players set #w cinemalya.data 0
 function cinemalya:v1.0.0/travel/waypoints/normalize_loop
+function cinemalya:v1.0.0/travel/waypoints/close_anchor
 

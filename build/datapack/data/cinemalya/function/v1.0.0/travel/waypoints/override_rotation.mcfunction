@@ -1,7 +1,8 @@
 
 #> cinemalya:v1.0.0/travel/waypoints/override_rotation
 #
-# @within	cinemalya:v1.0.0/travel/waypoints/target_from_coords
+# @within	cinemalya:v1.0.0/travel/waypoints/target_here
+#			cinemalya:v1.0.0/travel/waypoints/target_from_coords
 #			cinemalya:v1.0.0/travel/waypoints/target_from_entity
 #
 # @description		Apply the caller's yaw and pitch on top of whatever rotation the target had.

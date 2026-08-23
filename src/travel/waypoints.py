@@ -2,8 +2,102 @@
 from stewbeet import write_versioned_function
 
 
+def write_anchor(ns: str, version: str) -> None:
+	""" Pin down where and which way the caller was executing, so relative coordinates can be resolved. """
+	write_versioned_function("travel/waypoints/open_anchor", f"""
+#> open_anchor
+#
+# @executed			in the caller's own execution context
+#
+# @output			a marker tagged {ns}.anchor, standing on the execution position and facing its rotation
+#
+# @description		`execute summon` grants the execution position but not the execution rotation, so a
+#					second marker one block down the line of sight gives the anchor something to face.
+#					Both are needed: `~` coordinates want the position, `^` ones want the rotation too.
+#
+
+execute positioned ^ ^ ^1 summon marker run function {ns}:v{version}/travel/waypoints/anchor_ahead
+execute summon marker run function {ns}:v{version}/travel/waypoints/anchor_setup
+""")
+
+	write_versioned_function("travel/waypoints/anchor_ahead", f"""
+tag @s add {ns}.anchor_ahead
+tag @s add global.ignore
+""")
+
+	write_versioned_function("travel/waypoints/anchor_setup", f"""
+tag @s add {ns}.anchor
+tag @s add global.ignore
+tp @s ~ ~ ~ facing entity @e[type=marker,tag={ns}.anchor_ahead,limit=1] feet
+""")
+
+	write_versioned_function("travel/waypoints/close_anchor", f"""
+kill @e[type=marker,tag={ns}.anchor_ahead]
+kill @e[type=marker,tag={ns}.anchor]
+""")
+
+	write_versioned_function("travel/waypoints/read_anchor", f"""
+#> read_anchor
+#
+# @output storage	{ns}:work wp : the anchor as a waypoint
+#
+
+data modify storage {ns}:work wp set value {{pos:[0.0d,0.0d,0.0d],rot:[0.0f,0.0f]}}
+data modify storage {ns}:work wp.pos set from entity @e[type=marker,tag={ns}.anchor,limit=1] Pos
+data modify storage {ns}:work wp.rot set from entity @e[type=marker,tag={ns}.anchor,limit=1] Rotation
+""")
+
+	write_versioned_function("travel/waypoints/resolve_at", f"""
+#> resolve_at
+#
+# @input macro		i : int - index of the waypoint whose `at` string needs resolving
+#
+# @description		Run the caller's coordinate string through `execute positioned` from the anchor, so
+#					`~`, `^` and plain numbers all mean exactly what they would in the original command.
+#
+
+$data modify storage {ns}:work one_at.at set from storage {ns}:work args.waypoints[$(i)].at
+execute as @e[type=marker,tag={ns}.anchor,limit=1] at @s run function {ns}:v{version}/travel/waypoints/resolve_at_run with storage {ns}:work one_at
+$data modify storage {ns}:work args.waypoints[$(i)].pos set from storage {ns}:work resolved
+""")
+
+	write_versioned_function("travel/waypoints/resolve_at_run", f"""
+#> resolve_at_run
+#
+# @executed			as & at the anchor, so the string resolves against the caller's position and rotation
+# @input macro		at : string - a coordinate triple, ex: "~10 ~5 ~3" or "^ ^ ^12"
+#
+
+$execute positioned $(at) summon marker run function {ns}:v{version}/travel/waypoints/capture_resolved
+""")
+
+	write_versioned_function("travel/waypoints/capture_resolved", f"""
+data modify storage {ns}:work resolved set from entity @s Pos
+kill @s
+""")
+
+
 def write_waypoints(ns: str, version: str) -> None:
 	""" Build the waypoint list from the caller's arguments, then normalize it into a uniform shape. """
+	write_anchor(ns, version)
+
+	write_versioned_function("travel/waypoints/target_here", f"""
+#> target_here
+#
+# @executed			as the player, in the caller's execution context
+#
+# @description		Close the waypoint list on wherever the command was pointing, at eye height.
+#					This is what lets a command block aim a cinematic with `~` and `^` coordinates.
+#
+
+function {ns}:v{version}/travel/waypoints/open_anchor
+function {ns}:v{version}/travel/waypoints/read_anchor
+function {ns}:v{version}/travel/waypoints/close_anchor
+function {ns}:v{version}/travel/waypoints/raise_eyes
+function {ns}:v{version}/travel/waypoints/override_rotation
+data modify storage {ns}:work args.waypoints append from storage {ns}:work wp
+""")
+
 	write_versioned_function("travel/waypoints/start_here", f"""
 #> start_here
 #
@@ -122,6 +216,9 @@ scoreboard players operation #share {ns}.data = #duration {ns}.data
 scoreboard players operation #share {ns}.data /= #segments {ns}.data
 execute if score #share {ns}.data matches ..0 run scoreboard players set #share {ns}.data 1
 
+## Relative waypoint coordinates resolve against wherever the caller was executing
+function {ns}:v{version}/travel/waypoints/open_anchor
+
 ## Seed the running rotation, so a waypoint without one simply keeps the previous heading
 data modify storage {ns}:work last_rot set value [0.0f,0.0f]
 execute unless score #mode {ns}.data matches 2 run data modify storage {ns}:work last_rot set from entity @s Rotation
@@ -130,6 +227,7 @@ execute store result score #last_yaw {ns}.data run data get storage {ns}:work la
 
 scoreboard players set #w {ns}.data 0
 function {ns}:v{version}/travel/waypoints/normalize_loop
+function {ns}:v{version}/travel/waypoints/close_anchor
 """)
 
 	write_versioned_function("travel/waypoints/normalize_loop", f"""
@@ -152,6 +250,7 @@ function {ns}:v{version}/travel/waypoints/normalize_loop
 #
 
 $execute if data storage {ns}:work args.waypoints[$(i)].args run function {ns}:v{version}/travel/waypoints/expand with storage {ns}:work sel
+$execute if data storage {ns}:work args.waypoints[$(i)].at run function {ns}:v{version}/travel/waypoints/resolve_at with storage {ns}:work sel
 $execute unless data storage {ns}:work args.waypoints[$(i)].rot run data modify storage {ns}:work args.waypoints[$(i)].rot set from storage {ns}:work last_rot
 $execute unless data storage {ns}:work args.waypoints[$(i)].duration store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share {ns}.data
 

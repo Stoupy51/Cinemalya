@@ -3,6 +3,7 @@
 #
 # @within	cinemalya:v1.0.0/travel/from_coords
 #			cinemalya:v1.0.0/travel/from_entity
+#			cinemalya:v1.0.0/travel/from_here
 #			cinemalya:v1.0.0/travel/from_waypoints
 #
 # @output score		#duration, #smoothing, #mode, #ease_path cinemalya.data

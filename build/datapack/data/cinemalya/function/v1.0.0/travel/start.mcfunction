@@ -5,6 +5,7 @@
 #
 # @within	cinemalya:v1.0.0/travel/from_coords
 #			cinemalya:v1.0.0/travel/from_entity
+#			cinemalya:v1.0.0/travel/from_here
 #			cinemalya:v1.0.0/travel/from_waypoints
 #
 # @description		Build the path, then summon the display entity that carries the player along it.

@@ -11,6 +11,7 @@
 #
 
 $execute if data storage cinemalya:work args.waypoints[$(i)].args run function cinemalya:v1.0.0/travel/waypoints/expand with storage cinemalya:work sel
+$execute if data storage cinemalya:work args.waypoints[$(i)].at run function cinemalya:v1.0.0/travel/waypoints/resolve_at with storage cinemalya:work sel
 $execute unless data storage cinemalya:work args.waypoints[$(i)].rot run data modify storage cinemalya:work args.waypoints[$(i)].rot set from storage cinemalya:work last_rot
 $execute unless data storage cinemalya:work args.waypoints[$(i)].duration store result storage cinemalya:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share cinemalya.data
 

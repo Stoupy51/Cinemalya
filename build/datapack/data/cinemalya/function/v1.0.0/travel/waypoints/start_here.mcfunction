@@ -5,6 +5,7 @@
 #
 # @within	cinemalya:v1.0.0/travel/from_coords
 #			cinemalya:v1.0.0/travel/from_entity
+#			cinemalya:v1.0.0/travel/from_here
 #
 # @description		Open the waypoint list on the player's own eyes.
 #

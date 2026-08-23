@@ -5,6 +5,7 @@ from stewbeet import Mem, write_versioned_function
 ENTRY_POINTS: dict[str, str] = {
 	"launch":           "travel/from_coords",
 	"launch_at_entity": "travel/from_entity",
+	"launch_here":      "travel/from_here",
 	"launch_path":      "travel/from_waypoints",
 	"stop":             "playback/stop",
 	"intro":            "intro/start",

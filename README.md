@@ -16,11 +16,63 @@
 * ⚡ The whole path is computed once at launch. Playback pops one frame per step and does no maths at all.
 * 🔌 Signals let your own datapack react when a cinematic starts and ends.
 * 🧊 Free flying cameras with no player attached, for cutscenes you drive yourself.
+* 🧭 Relative coordinates throughout, so a command block can aim a cinematic with `~` and `^`.
 
 📦 This is an embedded library, so you package it inside your datapack as opposed to having a separate download.
 Requires [LanternLoad](https://github.com/LanternMC/load) and the [Bookshelf Spline](https://docs.mcbookshelf.dev/en/latest/modules/spline.html) module to operate.
 
 <br>
+
+# ⚡ Quick start
+
+Package the datapack inside yours, then call a function tag. Every entry point takes a single `with`
+compound, so each field inside it stays optional and you only write the ones you care about.
+
+```mcfunction
+execute as @s run function #cinemalya:v1/launch {with:{x:19.5,y:82.5,z:23.5,duration:60,arc_side:1,particle:"minecraft:glow"}}
+```
+
+That sweeps the player out of where they stand, along an arc, and sets them down on the coordinates you gave.
+Everything else is a variation on it:
+
+| I want to | Call |
+|---|---|
+| Fly a player to some coordinates | [`#cinemalya:v1/launch`](#launch) |
+| Aim it from a command block, with `~` and `^` | [`#cinemalya:v1/launch_here`](#launch-here) |
+| Fly to wherever an entity is standing | [`#cinemalya:v1/launch_at_entity`](#launch-at-entity) |
+| Fly through several waypoints | [`#cinemalya:v1/launch_path`](#launch-path) |
+| Open a scene with a title card | [`#cinemalya:v1/intro`](#intro) |
+| Cut a cinematic short | [`#cinemalya:v1/stop`](#stop) |
+| React when one starts or ends | [signals](#signals) |
+
+A command block wants the second one, because NBT cannot hold a `~`:
+
+```mcfunction
+execute positioned ~12 ~8 ~-4 rotated 90 20 as @a[distance=..30] run function #cinemalya:v1/launch_here {with:{duration:60,arc_side:1}}
+```
+
+A multi-waypoint path, written the short way:
+
+```mcfunction
+execute as @s run function #cinemalya:v1/launch_path {with:{duration:90,ease:"ease_in_out",waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16]},{args:[-72,68,20,92,-11.7]}]}}
+```
+
+And a title card that holds on an establishing shot before flying everyone in:
+
+```mcfunction
+execute positioned 36.29 102.97 81.36 rotated 145.55 21.76 run function #cinemalya:v1/intro {with:{title:"Warden Forest",subtitle:"by Stoupy",display_time:130,duration:50,particle:"minecraft:glow"}}
+```
+
+Then reach for the details:
+
+| Topic | |
+|---|---|
+| Every option and its default | [argument reference](#options) |
+| `[x, y, z, yaw, pitch, duration]` waypoints | [flat waypoints](#flat-waypoints) |
+| Waypoints relative to a command block | [relative waypoints](#relative-waypoints) |
+| Accelerating and decelerating | [easing a path](#easing) and [a single hop](#easing-hop) |
+| Why the camera sweeps instead of notching | [full precision rotation](#precision) |
+| Checking whether one is playing | [reading the state](#state) |
 
 # 📚 System explanation
 
@@ -45,6 +97,7 @@ no matter whether its path is 10 frames long or 500.
 
 Every entry point takes a single `with` compound, so each field inside it stays optional.
 
+<a id="launch"></a>
 ## 🚀 `#cinemalya:v1/launch`
 
 Fly the player from where they stand to a set of coordinates.
@@ -55,6 +108,7 @@ execute as @s run function #cinemalya:v1/launch {with:{x:19.5,y:82.5,z:23.5,dura
 
 `x` / `y` / `z` are **where the player ends up standing**, not where the camera stops. The camera flies to eye height above them and the player is set down on the spot.
 
+<a id="launch-at-entity"></a>
 ## 🎯 `#cinemalya:v1/launch_at_entity`
 
 Same thing, but the destination is read off another entity, rotation included.
@@ -63,6 +117,29 @@ Same thing, but the destination is read off another entity, rotation included.
 execute as @s run function #cinemalya:v1/launch_at_entity {with:{target:"@e[tag=my_camera_anchor,limit=1]",duration:60,ease:"ease_in_out"}}
 ```
 
+<a id="launch-here"></a>
+## 🧭 `#cinemalya:v1/launch_here`
+
+Fly the player to wherever the command was aiming. NBT cannot hold a `~`, so `launch` needs absolute
+numbers; this one takes its destination from the execution position and rotation instead, which means
+every vanilla coordinate form works:
+
+```mcfunction
+execute positioned ~12 ~8 ~-4 rotated 90 20 as @a[distance=..30] run function #cinemalya:v1/launch_here {with:{duration:60,arc_side:1}}
+```
+
+That is the one a command block wants. Note the order: `positioned` resolves against the **command block**
+before `as` swaps the executor, so the destination is fixed relative to the block while each player still
+starts from their own feet. `facing` and `^` local coordinates work the same way:
+
+```mcfunction
+execute positioned ^ ^2 ^15 facing entity @e[tag=boss,limit=1] run function #cinemalya:v1/launch_here {with:{duration:40,ease:"ease_in_out"}}
+```
+
+Like `launch`, the coordinates are where the player ends up **standing**; `yaw` and `pitch` still override
+the rotation if you would rather not set it with `rotated`.
+
+<a id="launch-path"></a>
 ## 🛤️ `#cinemalya:v1/launch_path`
 
 Fly along an explicit list of camera waypoints. Here the positions are **camera positions**, used literally.
@@ -76,6 +153,7 @@ execute as @s run function #cinemalya:v1/launch_path {with:{ease:"ease_in_out",w
 * Give a single waypoint and the player's own position is used as the starting one.
 * `waypoints[0]` is the starting point, so three waypoints mean two segments.
 
+<a id="flat-waypoints"></a>
 ### Flat waypoints
 
 Writing out `pos` and `rot` for a long path gets noisy, so a waypoint also accepts a single flat `args` list:
@@ -95,6 +173,26 @@ execute as @s run function #cinemalya:v1/launch_path {with:{ease:"ease_in_out",w
 Every value goes through a scoreboard on the way in, so plain integers work just as well as decimals.
 Mix the two forms freely: `args` is expanded into `pos` and `rot` before anything else looks at the waypoint.
 
+<a id="relative-waypoints"></a>
+### Relative waypoints
+
+A waypoint can carry an `at` string instead of a `pos`, resolved through `execute positioned` from
+wherever the command ran. Write a whole path relative to a command block and the build it sits in can be
+cloned anywhere without touching a single coordinate:
+
+```mcfunction
+execute rotated 0 0 run function #cinemalya:v1/launch_path {with:{duration:90,ease:"ease_in_out",waypoints:[{at:"~ ~20 ~",rot:[0,45]},{at:"~30 ~12 ~-30",rot:[135,20]},{at:"^ ^5 ^25",rot:[180,10]}]}}
+```
+
+`at` accepts anything the `positioned` argument does: `~` world-relative, `^` local to the execution
+rotation, or plain absolute numbers. It overrides `pos` and the position part of `args` when both are given.
+
+Local `^` coordinates need an execution rotation, and a command block has none of its own, so add an
+explicit `rotated` when you use them. Resolving happens once at launch against a pair of markers that
+capture the position and heading, so every waypoint measures from the same origin rather than from the
+previous one.
+
+<a id="easing"></a>
 ### Easing a path
 
 A path-level `ease` describes **the whole path**, not each hop. It accelerates away from the first waypoint
@@ -107,6 +205,7 @@ execute as @s run function #cinemalya:v1/launch_path {with:{duration:80,ease:"ea
 The end segments use a curve that arrives at exactly the speed a linear segment travels at, so there is no
 visible step where an eased end meets a cruising middle, however many waypoints the path has.
 
+<a id="easing-hop"></a>
 ### Easing a single hop
 
 Give a waypoint its own `ease` to override the path's for the segment **arriving at** it. Like `duration`,
@@ -126,6 +225,7 @@ Combine it with `duration` to control how long the beat lasts:
 execute as @s run function #cinemalya:v1/launch_path {with:{waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16,55],ease:"ease_out"},{args:[-72,68,20,92,-11.7,25],ease:"ease_in"}]}}
 ```
 
+<a id="stop"></a>
 ## 🛑 `#cinemalya:v1/stop`
 
 End the cinematic the player is riding, if any.
@@ -137,6 +237,7 @@ execute as @a run function #cinemalya:v1/stop {with:{}}
 The player is left exactly where the camera was, so **you** decide where they actually belong.
 `{with:{restore:false}}` leaves them in spectator too, for when your own code is about to set their gamemode anyway.
 
+<a id="intro"></a>
 ## 🎞️ `#cinemalya:v1/intro`
 
 The title card: hold on an establishing shot, name the scene, place every player, then fly them all down to where they belong.
@@ -149,6 +250,7 @@ Run it **positioned and rotated at the establishing shot**. `target_function` ru
 
 <br>
 
+<a id="signals"></a>
 # 📡 Signals
 
 Add your own function to these tags to react to a cinematic.
@@ -168,6 +270,7 @@ Runs **as and at the player**, once they have been set down and given their game
 
 <br>
 
+<a id="options"></a>
 # 📋 Argument reference
 
 | Field | Type | Default | Meaning |
@@ -185,11 +288,12 @@ Runs **as and at the player**, once they have been set down and given their game
 | `precise_rotation` | bool | `true` | Send rotations at full precision instead of 1.40625 degree steps |
 | `yaw` / `pitch` | float | target's | Override the rotation the camera ends on |
 
-`launch` also takes `x` / `y` / `z`, `launch_at_entity` takes `target`, and `launch_path` takes `waypoints`.
+`launch` also takes `x` / `y` / `z`, `launch_at_entity` takes `target`, `launch_here` takes none of them (it reads the execution position), and `launch_path` takes `waypoints`.
 `yaw` / `pitch` apply to `launch`, `launch_at_entity` and `intro`. On `launch_path` each waypoint carries its own `rot` instead.
 
 <br>
 
+<a id="precision"></a>
 # 🎯 Full precision rotation
 
 Minecraft sends entity rotations to the client quantised to steps of `360/256`, or `1.40625` degrees.
@@ -210,6 +314,7 @@ rotation drift, so a future Minecraft version could close it. Pass `precise_rota
 
 <br>
 
+<a id="state"></a>
 # 🔍 Reading the library's state
 
 | Score                      | Meaning                                   |

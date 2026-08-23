@@ -23,6 +23,7 @@ data remove storage cinemalya:work frames
 data remove storage cinemalya:work intro
 data remove storage cinemalya:work last_rot
 data remove storage cinemalya:work mid
+data remove storage cinemalya:work resolved
 data remove storage cinemalya:work rot_control
 data remove storage cinemalya:work rot_samples
 data remove storage cinemalya:work samples

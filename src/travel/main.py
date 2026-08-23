@@ -44,6 +44,24 @@ function {ns}:v{version}/travel/waypoints/target_from_entity
 function {ns}:v{version}/travel/start
 """)
 
+	write_versioned_function("travel/from_here", f"""
+#> from_here
+#
+# @executed			as the player, positioned & rotated wherever the caller aimed
+#
+# @input macro		with : compound - see the launch_here documentation in the README
+#
+# @description		Fly the player to the execution position and rotation, so the destination can be
+#					written with `~` and `^` coordinates. A command block never needs absolute numbers.
+#
+
+$data modify storage {ns}:work args set value $(with)
+function {ns}:v{version}/travel/defaults
+function {ns}:v{version}/travel/waypoints/start_here
+function {ns}:v{version}/travel/waypoints/target_here
+function {ns}:v{version}/travel/start
+""")
+
 	write_versioned_function("travel/from_waypoints", f"""
 #> from_waypoints
 #
