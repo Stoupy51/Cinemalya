@@ -15,6 +15,7 @@ scoreboard objectives add cinemalya.id dummy
 scoreboard objectives add cinemalya.delay dummy
 scoreboard objectives add cinemalya.frame dummy
 scoreboard objectives add cinemalya.smoothing dummy
+scoreboard objectives add cinemalya.ground dummy
 
 # A /reload keeps the entities and their sampled paths, so only the live counter has to be rebuilt
 execute store result score #entities cinemalya.data if entity @e[tag=cinemalya.cinematic]

@@ -10,6 +10,7 @@
 # @description		Inherit the missing rotation and duration, then unwrap this waypoint's yaw.
 #
 
+$execute if data storage cinemalya:work args.waypoints[$(i)].args run function cinemalya:v1.0.0/travel/waypoints/expand with storage cinemalya:work sel
 $execute unless data storage cinemalya:work args.waypoints[$(i)].rot run data modify storage cinemalya:work args.waypoints[$(i)].rot set from storage cinemalya:work last_rot
 $execute unless data storage cinemalya:work args.waypoints[$(i)].duration store result storage cinemalya:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share cinemalya.data
 

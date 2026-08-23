@@ -24,6 +24,10 @@ execute if data storage cinemalya:work args{ease:"ease_in"} run scoreboard playe
 execute if data storage cinemalya:work args{ease:"ease_out"} run scoreboard players set #ease cinemalya.data 2
 execute if data storage cinemalya:work args{ease:"ease_in_out"} run scoreboard players set #ease cinemalya.data 3
 
+## Full precision rotation packets, on unless the caller opted out
+scoreboard players set #precise cinemalya.data 1
+execute if data storage cinemalya:work args{precise_rotation:false} run scoreboard players set #precise cinemalya.data 0
+
 ## What to do with the player's gamemode (0 = remember and restore, 1 = leave alone, 2 = no player at all)
 scoreboard players set #mode cinemalya.data 0
 execute if data storage cinemalya:work args{gamemode:"keep"} run scoreboard players set #mode cinemalya.data 1

@@ -8,6 +8,7 @@
 scoreboard objectives remove cinemalya.data
 scoreboard objectives remove cinemalya.delay
 scoreboard objectives remove cinemalya.frame
+scoreboard objectives remove cinemalya.ground
 scoreboard objectives remove cinemalya.id
 scoreboard objectives remove cinemalya.smoothing
 scoreboard objectives remove load.status

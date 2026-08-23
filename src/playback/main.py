@@ -12,6 +12,9 @@ def write_tick(ns: str, version: str) -> None:
 # @description		Resolve the player riding this cinematic, then advance it by one tick.
 #
 
+# Full precision rotation, which matters most on the frames the camera is actually turning
+execute if entity @s[tag={ns}.precise] run function {ns}:v{version}/playback/precise_rotation
+
 # A free flying camera has nobody to carry along
 execute if entity @s[tag={ns}.detached] run return run function {ns}:v{version}/playback/advance
 
@@ -89,6 +92,20 @@ execute at @s run function {ns}:v{version}/playback/spawn_particle with storage 
 
 	write_versioned_function("playback/spawn_particle", """
 $particle $(particle) ~ ~ ~ 0.2 0.2 0.2 0 2
+""")
+
+	write_versioned_function("playback/precise_rotation", f"""
+#> precise_rotation
+#
+# @description	Rotations normally reach the client quantised to steps of 360/256 = 1.40625 degrees,
+#				which is what makes a spectator camera turn in visible notches (MC-184359).
+#				Flipping OnGround to the opposite of last tick's value makes the server send the
+#				rotation at full precision instead (MC-278440), and display entities are not living
+#				entities so nothing else reacts to the flag.
+#				Discovered by the community while investigating MC-278440.
+#
+
+execute store success entity @s OnGround byte 1 store success score @s {ns}.ground unless score @s {ns}.ground matches 1
 """)
 
 

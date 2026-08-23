@@ -30,6 +30,7 @@ scoreboard objectives add {ns}.id dummy
 scoreboard objectives add {ns}.delay dummy
 scoreboard objectives add {ns}.frame dummy
 scoreboard objectives add {ns}.smoothing dummy
+scoreboard objectives add {ns}.ground dummy
 
 # A /reload keeps the entities and their sampled paths, so only the live counter has to be rebuilt
 execute store result score #entities {ns}.data if entity @e[tag={ns}.cinematic]

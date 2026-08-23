@@ -88,6 +88,10 @@ execute if data storage {ns}:work args{{ease:"ease_in"}} run scoreboard players 
 execute if data storage {ns}:work args{{ease:"ease_out"}} run scoreboard players set #ease {ns}.data 2
 execute if data storage {ns}:work args{{ease:"ease_in_out"}} run scoreboard players set #ease {ns}.data 3
 
+## Full precision rotation packets, on unless the caller opted out
+scoreboard players set #precise {ns}.data 1
+execute if data storage {ns}:work args{{precise_rotation:false}} run scoreboard players set #precise {ns}.data 0
+
 ## What to do with the player's gamemode (0 = remember and restore, 1 = leave alone, 2 = no player at all)
 scoreboard players set #mode {ns}.data 0
 execute if data storage {ns}:work args{{gamemode:"keep"}} run scoreboard players set #mode {ns}.data 1
@@ -144,6 +148,7 @@ tag @s add smithed.entity
 tag @s add smithed.strict
 tag @s add global.ignore
 tag @s add global.ignore.kill
+execute if score #precise {ns}.data matches 1 run tag @s add {ns}.precise
 function {ns}:v{version}/travel/tags/main
 
 ## Timing state, and the client-side interpolation that hides the per-frame jumps

@@ -8,6 +8,9 @@
 # @description		Resolve the player riding this cinematic, then advance it by one tick.
 #
 
+# Full precision rotation, which matters most on the frames the camera is actually turning
+execute if entity @s[tag=cinemalya.precise] run function cinemalya:v1.0.0/playback/precise_rotation
+
 # A free flying camera has nobody to carry along
 execute if entity @s[tag=cinemalya.detached] run return run function cinemalya:v1.0.0/playback/advance
 

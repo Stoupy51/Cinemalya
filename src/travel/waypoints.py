@@ -151,6 +151,7 @@ function {ns}:v{version}/travel/waypoints/normalize_loop
 # @description		Inherit the missing rotation and duration, then unwrap this waypoint's yaw.
 #
 
+$execute if data storage {ns}:work args.waypoints[$(i)].args run function {ns}:v{version}/travel/waypoints/expand with storage {ns}:work sel
 $execute unless data storage {ns}:work args.waypoints[$(i)].rot run data modify storage {ns}:work args.waypoints[$(i)].rot set from storage {ns}:work last_rot
 $execute unless data storage {ns}:work args.waypoints[$(i)].duration store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share {ns}.data
 
@@ -163,4 +164,39 @@ execute if score #diff {ns}.data matches ..-180000 run scoreboard players add #y
 $execute store result storage {ns}:work args.waypoints[$(i)].rot[0] float 0.001 run scoreboard players get #yaw {ns}.data
 scoreboard players operation #last_yaw {ns}.data = #yaw {ns}.data
 $data modify storage {ns}:work last_rot set from storage {ns}:work args.waypoints[$(i)].rot
+""")
+
+	write_versioned_function("travel/waypoints/expand", f"""
+#> expand
+#
+# @input macro		i : int - index of the waypoint to expand
+#
+# @description		Unpack the flat `args` form of a waypoint into `pos`, `rot` and `duration`.
+#					Everything goes through a score, so writing plain integers works as well as decimals.
+#
+
+$data modify storage {ns}:work args.waypoints[$(i)].pos set value [0.0d,0.0d,0.0d]
+$execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].args[0] 1000
+$execute store result storage {ns}:work args.waypoints[$(i)].pos[0] double 0.001 run scoreboard players get #n {ns}.data
+$execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].args[1] 1000
+$execute store result storage {ns}:work args.waypoints[$(i)].pos[1] double 0.001 run scoreboard players get #n {ns}.data
+$execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].args[2] 1000
+$execute store result storage {ns}:work args.waypoints[$(i)].pos[2] double 0.001 run scoreboard players get #n {ns}.data
+
+# The rotation and the duration are optional tail elements, so a three element form still inherits them
+$execute if data storage {ns}:work args.waypoints[$(i)].args[4] run function {ns}:v{version}/travel/waypoints/expand_rot with storage {ns}:work sel
+$execute if data storage {ns}:work args.waypoints[$(i)].args[5] store result storage {ns}:work args.waypoints[$(i)].duration int 1 run data get storage {ns}:work args.waypoints[$(i)].args[5]
+""")
+
+	write_versioned_function("travel/waypoints/expand_rot", f"""
+#> expand_rot
+#
+# @input macro		i : int - index of the waypoint to expand
+#
+
+$data modify storage {ns}:work args.waypoints[$(i)].rot set value [0.0f,0.0f]
+$execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].args[3] 1000
+$execute store result storage {ns}:work args.waypoints[$(i)].rot[0] float 0.001 run scoreboard players get #n {ns}.data
+$execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].args[4] 1000
+$execute store result storage {ns}:work args.waypoints[$(i)].rot[1] float 0.001 run scoreboard players get #n {ns}.data
 """)

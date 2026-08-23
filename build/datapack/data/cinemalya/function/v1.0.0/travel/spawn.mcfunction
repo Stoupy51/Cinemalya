@@ -17,6 +17,7 @@ tag @s add smithed.entity
 tag @s add smithed.strict
 tag @s add global.ignore
 tag @s add global.ignore.kill
+execute if score #precise cinemalya.data matches 1 run tag @s add cinemalya.precise
 function cinemalya:v1.0.0/travel/tags/main
 
 ## Timing state, and the client-side interpolation that hides the per-frame jumps
