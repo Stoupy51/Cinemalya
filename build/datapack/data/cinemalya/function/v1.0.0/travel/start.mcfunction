@@ -1,0 +1,27 @@
+
+#> cinemalya:v1.0.0/travel/start
+#
+# @executed	as & at the player,or anywhere at all for a detached camera
+#
+# @within	cinemalya:v1.0.0/travel/from_coords
+#			cinemalya:v1.0.0/travel/from_entity
+#			cinemalya:v1.0.0/travel/from_waypoints
+#
+# @description		Build the path, then summon the display entity that carries the player along it.
+#
+
+# One cinematic per player: a second launch replaces the first instead of fighting over the camera
+execute unless score #mode cinemalya.data matches 2 run function cinemalya:v1.0.0/playback/stop_silent
+
+## Build the path
+function cinemalya:v1.0.0/travel/waypoints/normalize
+function cinemalya:v1.0.0/travel/control/main
+function cinemalya:v1.0.0/travel/sample/main
+function cinemalya:v1.0.0/travel/frames/main
+
+## Hand over to the entity, tagging the player so the summoned entity can find them
+execute unless score #mode cinemalya.data matches 2 run function #cinemalya:v1/signals/on_launch
+execute unless score #mode cinemalya.data matches 2 run tag @s add cinemalya.temp
+execute summon item_display run function cinemalya:v1.0.0/travel/spawn
+execute unless score #mode cinemalya.data matches 2 run tag @s remove cinemalya.temp
+
