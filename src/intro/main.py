@@ -36,7 +36,7 @@ execute summon marker run function {ns}:v{version}/intro/read_shot
 kill @e[type=marker,tag={ns}.shot_ahead]
 
 ## Place every player, then start their travel from that shot
-$execute as $(selector) at @s run function {ns}:v{version}/intro/one_player with storage {ns}:work intro
+function {ns}:v{version}/intro/spread with storage {ns}:work intro
 
 ## The card holds for display_time, less the ticks the fade out needs to play through
 execute store result score #display {ns}.data run data get storage {ns}:work intro.display_time
@@ -44,6 +44,21 @@ scoreboard players remove #display {ns}.data 20
 execute if score #display {ns}.data matches ..1 run scoreboard players set #display {ns}.data 1
 execute store result storage {ns}:work intro.display_time int 1 run scoreboard players get #display {ns}.data
 execute positioned ~ ~1.6 ~ run function {ns}:v{version}/intro/display with storage {ns}:work intro
+""")
+
+	write_versioned_function("intro/spread", f"""
+#> spread
+#
+# @executed			positioned & rotated at the establishing shot
+#
+# @input macro		selector : string - which players the intro plays for
+#
+# @description		Macro arguments are resolved when a function is instantiated, all at once, so a
+#					function taking `with` cannot also read a key out of it. This second hop reads the
+#					defaulted arguments back out of storage, where `selector` now sits at the top level.
+#
+
+$execute as $(selector) at @s run function {ns}:v{version}/intro/one_player with storage {ns}:work intro
 """)
 
 	write_versioned_function("intro/read_shot", f"""

@@ -3,7 +3,7 @@
 #
 # @executed	as & at one selected player
 #
-# @within	cinemalya:v1.0.0/intro/start with storage cinemalya:work intro
+# @within	cinemalya:v1.0.0/intro/spread with storage cinemalya:work intro
 #
 # @args		target_function (unknown)
 #

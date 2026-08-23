@@ -6,7 +6,6 @@
 # @within	cinemalya:v1.0.0/api/intro {with:$(with)}
 #
 # @args		with (unknown)
-#			selector (unknown)
 #
 # @input macro		with : compound - see the intro documentation in the README
 # 
@@ -34,7 +33,7 @@ execute summon marker run function cinemalya:v1.0.0/intro/read_shot
 kill @e[type=marker,tag=cinemalya.shot_ahead]
 
 ## Place every player, then start their travel from that shot
-$execute as $(selector) at @s run function cinemalya:v1.0.0/intro/one_player with storage cinemalya:work intro
+function cinemalya:v1.0.0/intro/spread with storage cinemalya:work intro
 
 ## The card holds for display_time, less the ticks the fade out needs to play through
 execute store result score #display cinemalya.data run data get storage cinemalya:work intro.display_time
