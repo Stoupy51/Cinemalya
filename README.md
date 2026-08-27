@@ -27,7 +27,7 @@ https://github.com/user-attachments/assets/41fed243-05f5-457f-afa7-ba6c6ea59dee
 # ⚡ Quick start
 
 ```mcfunction
-execute as @s run function #cinemalya:v1/launch {with:{x:19.5,y:82.5,z:23.5,duration:60,arc_side:1,particle:"minecraft:glow"}}
+execute as @p run function #cinemalya:v1/launch {with:{x:19.5,y:82.5,z:23.5,duration:60,arc_side:1,particle:"minecraft:glow"}}
 ```
 
 Every entry point takes one `with` compound, so each field inside stays optional.
@@ -51,7 +51,7 @@ Every entry point takes one `with` compound, so each field inside stays optional
 ### `#cinemalya:v1/launch`
 
 ```mcfunction
-execute as @s run function #cinemalya:v1/launch {with:{x:19.5,y:82.5,z:23.5,duration:60,arc_side:1}}
+execute as <player> run function #cinemalya:v1/launch {with:{x:19.5,y:82.5,z:23.5,duration:60,arc_side:1}}
 ```
 
 `x` / `y` / `z` are where the player ends up **standing**, not where the camera stops.
@@ -71,7 +71,7 @@ Mind the order: `positioned` resolves against the command block *before* `as` sw
 ### `#cinemalya:v1/launch_at_entity`
 
 ```mcfunction
-execute as @s run function #cinemalya:v1/launch_at_entity {with:{target:"@e[tag=camera_anchor,limit=1]",duration:60,ease:"ease_in_out"}}
+execute as <player> run function #cinemalya:v1/launch_at_entity {with:{target:"@e[tag=camera_anchor,limit=1]",duration:60,ease:"ease_in_out"}}
 ```
 
 <a id="launch-path"></a>
@@ -80,7 +80,7 @@ execute as @s run function #cinemalya:v1/launch_at_entity {with:{target:"@e[tag=
 Fly through explicit waypoints. Here the positions are **camera positions**, used literally.
 
 ```mcfunction
-execute as @s run function #cinemalya:v1/launch_path {with:{duration:90,ease:"ease_in_out",waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16]},{args:[-72,68,20,92,-11.7]}]}}
+execute as <player> run function #cinemalya:v1/launch_path {with:{duration:90,ease:"ease_in_out",waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16]},{args:[-72,68,20,92,-11.7]}]}}
 ```
 
 `waypoints[0]` is the starting point, so three waypoints mean two segments. Give just one and the player's own position starts the path. A waypoint may be written three ways:
@@ -96,7 +96,7 @@ Missing `rot` keeps the previous heading; missing `duration` takes an equal shar
 **Easing.** A path-level `ease` shapes the *whole* travel: it accelerates off the first waypoint, cruises through the middle ones at a steady pace, and settles onto the last. Put `ease` on a waypoint instead to shape only the hop arriving there:
 
 ```mcfunction
-execute as @s run function #cinemalya:v1/launch_path {with:{waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16,55],ease:"ease_out"},{args:[-72,68,20,92,-11.7,25],ease:"ease_in"}]}}
+execute as <player> run function #cinemalya:v1/launch_path {with:{waypoints:[{args:[-112,75,-21,-30,4]},{args:[-116,77,28,-121,16,55],ease:"ease_out"},{args:[-72,68,20,92,-11.7,25],ease:"ease_in"}]}}
 ```
 
 That drifts to a near stop on the middle waypoint, holds the beat, then accelerates away.
@@ -116,7 +116,7 @@ execute positioned 36.29 102.97 81.36 rotated 145.55 21.76 run function #cinemal
 ### `#cinemalya:v1/stop`
 
 ```mcfunction
-execute as @a run function #cinemalya:v1/stop {with:{}}
+execute as <player> run function #cinemalya:v1/stop {with:{}}
 ```
 
 The player is left exactly where the camera was, so you decide where they belong. `restore:false` leaves them in spectator too.
