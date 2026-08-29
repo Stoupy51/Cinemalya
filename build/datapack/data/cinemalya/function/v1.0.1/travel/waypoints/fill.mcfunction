@@ -15,6 +15,12 @@ $execute if data storage cinemalya:work args.waypoints[$(i)].at run function cin
 $execute unless data storage cinemalya:work args.waypoints[$(i)].rot run data modify storage cinemalya:work args.waypoints[$(i)].rot set from storage cinemalya:work last_rot
 $execute unless data storage cinemalya:work args.waypoints[$(i)].duration store result storage cinemalya:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share cinemalya.data
 
+## A waypoint duration drives its own segment's frame loop, so it gets the same bounds as the travel total
+$execute store result score #wp_duration cinemalya.data run data get storage cinemalya:work args.waypoints[$(i)].duration
+execute if score #wp_duration cinemalya.data matches ..0 run scoreboard players set #wp_duration cinemalya.data 1
+execute if score #wp_duration cinemalya.data matches 36001.. run scoreboard players set #wp_duration cinemalya.data 36000
+$execute store result storage cinemalya:work args.waypoints[$(i)].duration int 1 run scoreboard players get #wp_duration cinemalya.data
+
 ## Keep the yaw within half a turn of the previous one (a 350 degree spin becomes a 10 degree one)
 $execute store result score #yaw cinemalya.data run data get storage cinemalya:work args.waypoints[$(i)].rot[0] 1000
 scoreboard players operation #diff cinemalya.data = #yaw cinemalya.data

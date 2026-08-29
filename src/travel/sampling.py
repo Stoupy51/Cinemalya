@@ -1,6 +1,8 @@
 # Imports
 from stewbeet import write_versioned_function
 
+from ..limits import MIN_SAMPLING_STEP
+
 
 def write_sampling(ns: str, version: str) -> None:
 	""" Run the control points through Bookshelf's spline sampler. """
@@ -24,10 +26,12 @@ execute if score #samples {ns}.data matches ..32 run scoreboard players set #sam
 execute if score #samples {ns}.data matches 400.. run scoreboard players set #samples {ns}.data 400
 
 ## Sampling step, in millionths, spread over the whole curve
+# The floor is what keeps the sampler terminating: Bookshelf reads the step back as an int, so a smaller
+# one arrives as zero, never advances, and recurses on the same point until the watchdog kills the server.
 scoreboard players operation #step {ns}.data = #segments {ns}.data
 scoreboard players operation #step {ns}.data *= #1000000 {ns}.data
 scoreboard players operation #step {ns}.data /= #samples {ns}.data
-execute if score #step {ns}.data matches ..0 run scoreboard players set #step {ns}.data 1
+execute if score #step {ns}.data matches ..{MIN_SAMPLING_STEP} run scoreboard players set #step {ns}.data {MIN_SAMPLING_STEP}
 execute store result storage {ns}:work control.step double 0.000001 run scoreboard players get #step {ns}.data
 data modify storage {ns}:work rot_control.step set from storage {ns}:work control.step
 
@@ -63,3 +67,4 @@ data modify storage bs:in spline.sample_catmull_rom set from storage {ns}:work r
 function #bs.spline:sample_catmull_rom
 data modify storage {ns}:work rot_samples set from storage bs:out spline.sample_catmull_rom
 """)
+

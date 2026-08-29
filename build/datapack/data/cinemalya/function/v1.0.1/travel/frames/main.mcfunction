@@ -14,5 +14,9 @@ data modify storage cinemalya:work frames set value {points:[],rotations:[]}
 scoreboard players operation #last_seg cinemalya.data = #segments cinemalya.data
 scoreboard players remove #last_seg cinemalya.data 1
 scoreboard players set #seg cinemalya.data 0
+
+# Frames left to spend across every remaining segment. Raising the smoothing keeps a normal travel well
+# clear of it, so this only ever bites on per waypoint durations, which no earlier total can bound.
+scoreboard players set #budget cinemalya.data 1200
 function cinemalya:v1.0.1/travel/frames/segment_loop
 

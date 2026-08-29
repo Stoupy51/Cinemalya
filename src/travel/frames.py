@@ -1,6 +1,8 @@
 # Imports
 from stewbeet import write_versioned_function
 
+from ..limits import MAX_FRAMES
+
 
 def write_frames(ns: str, version: str) -> None:
 	""" Pick, once and for all, the sample every playback tick will land on. """
@@ -18,11 +20,15 @@ data modify storage {ns}:work frames set value {{points:[],rotations:[]}}
 scoreboard players operation #last_seg {ns}.data = #segments {ns}.data
 scoreboard players remove #last_seg {ns}.data 1
 scoreboard players set #seg {ns}.data 0
+
+# Frames left to spend across every remaining segment. Raising the smoothing keeps a normal travel well
+# clear of it, so this only ever bites on per waypoint durations, which no earlier total can bound.
+scoreboard players set #budget {ns}.data {MAX_FRAMES}
 function {ns}:v{version}/travel/frames/segment_loop
 """)
 
 	write_versioned_function("travel/frames/segment_loop", f"""
-execute if score #seg {ns}.data < #segments {ns}.data run function {ns}:v{version}/travel/frames/segment
+execute if score #budget {ns}.data matches 1.. if score #seg {ns}.data < #segments {ns}.data run function {ns}:v{version}/travel/frames/segment
 """)
 
 	write_versioned_function("travel/frames/segment", f"""
@@ -38,6 +44,8 @@ execute store result storage {ns}:work sel.i int 1 run scoreboard players get #n
 function {ns}:v{version}/travel/frames/read_duration with storage {ns}:work sel
 scoreboard players operation #seg_frames {ns}.data /= #smoothing {ns}.data
 execute if score #seg_frames {ns}.data matches ..0 run scoreboard players set #seg_frames {ns}.data 1
+execute if score #seg_frames {ns}.data > #budget {ns}.data run scoreboard players operation #seg_frames {ns}.data = #budget {ns}.data
+scoreboard players operation #budget {ns}.data -= #seg_frames {ns}.data
 
 function {ns}:v{version}/travel/frames/segment_ease
 

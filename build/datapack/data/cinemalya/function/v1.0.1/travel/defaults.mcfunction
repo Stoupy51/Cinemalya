@@ -34,9 +34,16 @@ scoreboard players set #mode cinemalya.data 0
 execute if data storage cinemalya:work args{gamemode:"keep"} run scoreboard players set #mode cinemalya.data 1
 execute if data storage cinemalya:work args{gamemode:"none"} run scoreboard players set #mode cinemalya.data 2
 
-## Timing, clamped so a zero can never divide anything later on
+## Timing, clamped so a zero can never divide anything later on and an absurd value can never be looped over
 execute store result score #duration cinemalya.data run data get storage cinemalya:work args.duration
 execute store result score #smoothing cinemalya.data run data get storage cinemalya:work args.smoothing
 execute if score #duration cinemalya.data matches ..0 run scoreboard players set #duration cinemalya.data 1
+execute if score #duration cinemalya.data matches 36001.. run scoreboard players set #duration cinemalya.data 36000
 execute if score #smoothing cinemalya.data matches ..0 run scoreboard players set #smoothing cinemalya.data 1
+execute if score #smoothing cinemalya.data matches 101.. run scoreboard players set #smoothing cinemalya.data 100
+
+## A long travel buys its length with softer steps rather than with a frame list nothing can hold
+scoreboard players operation #frames cinemalya.data = #duration cinemalya.data
+scoreboard players operation #frames cinemalya.data /= #smoothing cinemalya.data
+execute if score #frames cinemalya.data matches 1201.. run function cinemalya:v1.0.1/travel/raise_smoothing
 

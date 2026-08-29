@@ -26,6 +26,7 @@ scoreboard players set #-2 cinemalya.data -2
 scoreboard players set #-1 cinemalya.data -1
 scoreboard players set #2 cinemalya.data 2
 scoreboard players set #4 cinemalya.data 4
+scoreboard players set #1200 cinemalya.data 1200
 scoreboard players set #10000 cinemalya.data 10000
 scoreboard players set #30000 cinemalya.data 30000
 scoreboard players set #1000000 cinemalya.data 1000000

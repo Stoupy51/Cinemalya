@@ -1,6 +1,7 @@
 # Imports
 from stewbeet import Mem, write_versioned_function
 
+from ..limits import MAX_DURATION, MAX_FRAMES, MAX_SMOOTHING, MAX_TAGS, MAX_WAYPOINTS
 from .control import write_control
 from .frames import write_frames
 from .sampling import write_sampling
@@ -82,7 +83,7 @@ function {ns}:v{version}/travel/start
 """)
 
 
-def write_defaults(ns: str) -> None:
+def write_defaults(ns: str, version: str) -> None:
 	""" Fill in every optional argument, then turn the string options into scores to branch on. """
 	write_versioned_function("travel/defaults", f"""
 #> defaults
@@ -115,11 +116,32 @@ scoreboard players set #mode {ns}.data 0
 execute if data storage {ns}:work args{{gamemode:"keep"}} run scoreboard players set #mode {ns}.data 1
 execute if data storage {ns}:work args{{gamemode:"none"}} run scoreboard players set #mode {ns}.data 2
 
-## Timing, clamped so a zero can never divide anything later on
+## Timing, clamped so a zero can never divide anything later on and an absurd value can never be looped over
 execute store result score #duration {ns}.data run data get storage {ns}:work args.duration
 execute store result score #smoothing {ns}.data run data get storage {ns}:work args.smoothing
 execute if score #duration {ns}.data matches ..0 run scoreboard players set #duration {ns}.data 1
+execute if score #duration {ns}.data matches {MAX_DURATION + 1}.. run scoreboard players set #duration {ns}.data {MAX_DURATION}
 execute if score #smoothing {ns}.data matches ..0 run scoreboard players set #smoothing {ns}.data 1
+execute if score #smoothing {ns}.data matches {MAX_SMOOTHING + 1}.. run scoreboard players set #smoothing {ns}.data {MAX_SMOOTHING}
+
+## A long travel buys its length with softer steps rather than with a frame list nothing can hold
+scoreboard players operation #frames {ns}.data = #duration {ns}.data
+scoreboard players operation #frames {ns}.data /= #smoothing {ns}.data
+execute if score #frames {ns}.data matches {MAX_FRAMES + 1}.. run function {ns}:v{version}/travel/raise_smoothing
+""")
+
+	write_versioned_function("travel/raise_smoothing", f"""
+#> raise_smoothing
+#
+# @input score		#duration {ns}.data
+# @output score		#smoothing {ns}.data : the smallest value keeping the travel under {MAX_FRAMES} frames
+#
+# @description		Round the division up, so the frame count lands just under the cap instead of just over it.
+#
+
+scoreboard players operation #smoothing {ns}.data = #duration {ns}.data
+scoreboard players add #smoothing {ns}.data {MAX_FRAMES - 1}
+scoreboard players operation #smoothing {ns}.data /= #{MAX_FRAMES} {ns}.data
 """)
 
 
@@ -132,6 +154,10 @@ def write_start(ns: str, version: str) -> None:
 #
 # @description		Build the path, then summon the display entity that carries the player along it.
 #
+
+# The waypoint count drives three separate loops, so an oversized path is refused rather than truncated
+execute store result score #count {ns}.data run data get storage {ns}:work args.waypoints
+execute if score #count {ns}.data matches {MAX_WAYPOINTS + 1}.. run return fail
 
 # One cinematic per player: a second launch replaces the first instead of fighting over the camera
 execute unless score #mode {ns}.data matches 2 run function {ns}:v{version}/playback/stop_silent
@@ -255,6 +281,7 @@ def write_extra_tags(ns: str, version: str) -> None:
 #
 
 execute store result score #tag_count {ns}.data run data get storage {ns}:work args.tags
+execute if score #tag_count {ns}.data matches {MAX_TAGS + 1}.. run scoreboard players set #tag_count {ns}.data {MAX_TAGS}
 scoreboard players set #t {ns}.data 0
 function {ns}:v{version}/travel/tags/loop
 """)
@@ -286,10 +313,11 @@ def main() -> None:
 	version: str = Mem.ctx.project_version
 
 	write_entry_points(ns, version)
-	write_defaults(ns)
+	write_defaults(ns, version)
 	write_waypoints(ns, version)
 	write_control(ns, version)
 	write_sampling(ns, version)
 	write_frames(ns, version)
 	write_start(ns, version)
 	write_extra_tags(ns, version)
+

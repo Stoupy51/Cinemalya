@@ -143,6 +143,21 @@ The player is left exactly where the camera was, so you decide where they belong
 
 Per entry point: `launch` takes `x`/`y`/`z`, `launch_at_entity` takes `target`, `launch_path` takes `waypoints`, `launch_here` takes neither. `yaw`/`pitch` do not apply to `launch_path`, where each waypoint carries its own `rot`.
 
+<a id="limits"></a>
+### Limits
+
+Every argument that ends up bounding a loop is clamped at launch, so a typo costs you a wrong looking cinematic rather than a frozen server.
+
+| Argument                | Bound            | What happens past it                                  |
+|-------------------------|------------------|-------------------------------------------------------|
+| `duration`, `.duration` | `36000` (30 min) | Clamped, per travel and per waypoint                  |
+| `smoothing`             | `1` to `100`     | Clamped                                               |
+| `waypoints`             | `128`            | The launch is refused and returns `fail`              |
+| `tags`                  | `32`             | The extras are dropped                                |
+| Frames emitted          | `1200`           | The smoothing rises so the path keeps its full length |
+
+A travel asking for more frames than the budget gets a softer `smoothing` instead of a shortened path, so `duration:36000` still lands where you told it to.
+
 <br>
 
 <a id="signals"></a>

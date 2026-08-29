@@ -13,6 +13,8 @@ execute store result storage cinemalya:work sel.i int 1 run scoreboard players g
 function cinemalya:v1.0.1/travel/frames/read_duration with storage cinemalya:work sel
 scoreboard players operation #seg_frames cinemalya.data /= #smoothing cinemalya.data
 execute if score #seg_frames cinemalya.data matches ..0 run scoreboard players set #seg_frames cinemalya.data 1
+execute if score #seg_frames cinemalya.data > #budget cinemalya.data run scoreboard players operation #seg_frames cinemalya.data = #budget cinemalya.data
+scoreboard players operation #budget cinemalya.data -= #seg_frames cinemalya.data
 
 function cinemalya:v1.0.1/travel/frames/segment_ease
 

@@ -20,10 +20,12 @@ execute if score #samples cinemalya.data matches ..32 run scoreboard players set
 execute if score #samples cinemalya.data matches 400.. run scoreboard players set #samples cinemalya.data 400
 
 ## Sampling step, in millionths, spread over the whole curve
+# The floor is what keeps the sampler terminating: Bookshelf reads the step back as an int, so a smaller
+# one arrives as zero, never advances, and recurses on the same point until the watchdog kills the server.
 scoreboard players operation #step cinemalya.data = #segments cinemalya.data
 scoreboard players operation #step cinemalya.data *= #1000000 cinemalya.data
 scoreboard players operation #step cinemalya.data /= #samples cinemalya.data
-execute if score #step cinemalya.data matches ..0 run scoreboard players set #step cinemalya.data 1
+execute if score #step cinemalya.data matches ..1000 run scoreboard players set #step cinemalya.data 1000
 execute store result storage cinemalya:work control.step double 0.000001 run scoreboard players get #step cinemalya.data
 data modify storage cinemalya:work rot_control.step set from storage cinemalya:work control.step
 

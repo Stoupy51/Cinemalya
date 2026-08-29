@@ -21,16 +21,20 @@ def main() -> None:
 	ns: str = Mem.ctx.project_id
 	version: str = Mem.ctx.project_version
 	major, minor, patch = version.split(".")
-	guard: str = f"if score #{ns}.major load.status matches {major} if score #{ns}.minor load.status matches {minor} if score #{ns}.patch load.status matches {patch}"
+	version_guard: str = f"if score #{ns}.major load.status matches {major} if score #{ns}.minor load.status matches {minor} if score #{ns}.patch load.status matches {patch}"
 
 	for tag_name, target in ENTRY_POINTS.items():
 		write_versioned_function(f"api/{tag_name}", f"""
 #> {tag_name}
 #
 # @description		Version guard: only the newest {ns} loaded in the world runs the call.
+#					The loaded check matters just as much. The version scores are set the moment the pack
+#					is read, while the constants every computation divides by are written by confirm_load,
+#					which waits for a player to be online. A call landing in that window would compute its
+#					sampling step from zeroed constants and hang the server inside the spline sampler.
 #
 
-$execute {guard} run function {ns}:v{version}/{target} {{with:$(with)}}
+$execute if score #{ns}.loaded load.status matches 1 {version_guard} run function {ns}:v{version}/{target} {{with:$(with)}}
 """, tags=[f"{ns}:v{major}/{tag_name}"])
 
 	# Signals are pure extension points: the library owns the tag, datapacks own its members

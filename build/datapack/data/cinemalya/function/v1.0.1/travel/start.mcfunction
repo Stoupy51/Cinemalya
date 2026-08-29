@@ -11,6 +11,10 @@
 # @description		Build the path, then summon the display entity that carries the player along it.
 #
 
+# The waypoint count drives three separate loops, so an oversized path is refused rather than truncated
+execute store result score #count cinemalya.data run data get storage cinemalya:work args.waypoints
+execute if score #count cinemalya.data matches 129.. run return fail
+
 # One cinematic per player: a second launch replaces the first instead of fighting over the camera
 execute unless score #mode cinemalya.data matches 2 run function cinemalya:v1.0.1/playback/stop_silent
 

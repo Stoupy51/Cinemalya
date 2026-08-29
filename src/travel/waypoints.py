@@ -1,6 +1,8 @@
 # Imports
 from stewbeet import write_versioned_function
 
+from ..limits import MAX_DURATION
+
 
 def write_anchor(ns: str, version: str) -> None:
 	""" Pin down where and which way the caller was executing, so relative coordinates can be resolved. """
@@ -254,6 +256,12 @@ $execute if data storage {ns}:work args.waypoints[$(i)].at run function {ns}:v{v
 $execute unless data storage {ns}:work args.waypoints[$(i)].rot run data modify storage {ns}:work args.waypoints[$(i)].rot set from storage {ns}:work last_rot
 $execute unless data storage {ns}:work args.waypoints[$(i)].duration store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share {ns}.data
 
+## A waypoint duration drives its own segment's frame loop, so it gets the same bounds as the travel total
+$execute store result score #wp_duration {ns}.data run data get storage {ns}:work args.waypoints[$(i)].duration
+execute if score #wp_duration {ns}.data matches ..0 run scoreboard players set #wp_duration {ns}.data 1
+execute if score #wp_duration {ns}.data matches {MAX_DURATION + 1}.. run scoreboard players set #wp_duration {ns}.data {MAX_DURATION}
+$execute store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #wp_duration {ns}.data
+
 ## Keep the yaw within half a turn of the previous one (a 350 degree spin becomes a 10 degree one)
 $execute store result score #yaw {ns}.data run data get storage {ns}:work args.waypoints[$(i)].rot[0] 1000
 scoreboard players operation #diff {ns}.data = #yaw {ns}.data
@@ -299,3 +307,4 @@ $execute store result storage {ns}:work args.waypoints[$(i)].rot[0] float 0.001 
 $execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].args[4] 1000
 $execute store result storage {ns}:work args.waypoints[$(i)].rot[1] float 0.001 run scoreboard players get #n {ns}.data
 """)
+
