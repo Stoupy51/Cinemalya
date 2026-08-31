@@ -31,9 +31,10 @@ execute unless data storage {ns}:work intro.title_color run data modify storage 
 execute unless data storage {ns}:work intro.subtitle_color run data modify storage {ns}:work intro.subtitle_color set value "white"
 
 ## Freeze the establishing shot once, so every player's travel opens on the very same camera
-execute positioned ^ ^ ^1 summon marker run tag @s add {ns}.shot_ahead
-execute summon marker run function {ns}:v{version}/intro/read_shot
-kill @e[type=marker,tag={ns}.shot_ahead]
+function {ns}:v{version}/travel/waypoints/look_ahead
+execute summon marker run function {ns}:v{version}/travel/waypoints/read_here
+function {ns}:v{version}/travel/waypoints/raise_eyes
+data modify storage {ns}:work intro.shot set from storage {ns}:work wp
 
 ## Place every player, then start their travel from that shot
 function {ns}:v{version}/intro/spread with storage {ns}:work intro
@@ -59,27 +60,6 @@ execute positioned ~ ~1.6 ~ run function {ns}:v{version}/intro/display with stor
 #
 
 $execute as $(selector) at @s run function {ns}:v{version}/intro/one_player with storage {ns}:work intro
-""")
-
-	write_versioned_function("intro/read_shot", f"""
-#> read_shot
-#
-# @executed			as a throwaway marker standing on the establishing shot
-#
-# @output storage	{ns}:work intro.shot : the establishing shot as a waypoint, at eye height
-#
-# @description		`execute summon` hands the marker the execution position but not the execution
-#					rotation, so the rotation is recovered by facing a second marker placed one
-#					block down the line of sight.
-#
-
-tp @s ~ ~ ~ facing entity @e[type=marker,tag={ns}.shot_ahead,limit=1] feet
-data modify storage {ns}:work wp set value {{pos:[0.0d,0.0d,0.0d],rot:[0.0f,0.0f]}}
-data modify storage {ns}:work wp.pos set from entity @s Pos
-data modify storage {ns}:work wp.rot set from entity @s Rotation
-function {ns}:v{version}/travel/waypoints/raise_eyes
-data modify storage {ns}:work intro.shot set from storage {ns}:work wp
-kill @s
 """)
 
 	write_versioned_function("intro/none", """
