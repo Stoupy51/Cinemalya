@@ -4,49 +4,62 @@ from stewbeet import write_versioned_function
 from ..limits import MAX_DURATION
 
 
-def write_anchor(ns: str, version: str) -> None:
-	""" Pin down where and which way the caller was executing, so relative coordinates can be resolved. """
-	write_versioned_function("travel/waypoints/open_anchor", f"""
-#> open_anchor
+def write_capture(ns: str, version: str) -> None:
+	""" Read back where and which way the caller was executing, so relative coordinates can be resolved. """
+	write_versioned_function("travel/waypoints/look_ahead", f"""
+#> look_ahead
 #
 # @executed			in the caller's own execution context
 #
-# @output			a marker tagged {ns}.anchor, standing on the execution position and facing its rotation
+# @output storage	{ns}:work ahead : the point one block down the caller's line of sight
 #
-# @description		`execute summon` grants the execution position but not the execution rotation, so a
-#					second marker one block down the line of sight gives the anchor something to face.
-#					Both are needed: `~` coordinates want the position, `^` ones want the rotation too.
-#
-
-execute positioned ^ ^ ^1 summon marker run function {ns}:v{version}/travel/waypoints/anchor_ahead
-execute summon marker run function {ns}:v{version}/travel/waypoints/anchor_setup
-""")
-
-	write_versioned_function("travel/waypoints/anchor_ahead", f"""
-tag @s add {ns}.anchor_ahead
-tag @s add global.ignore
-""")
-
-	write_versioned_function("travel/waypoints/anchor_setup", f"""
-tag @s add {ns}.anchor
-tag @s add global.ignore
-tp @s ~ ~ ~ facing entity @e[type=marker,tag={ns}.anchor_ahead,limit=1] feet
-""")
-
-	write_versioned_function("travel/waypoints/close_anchor", f"""
-kill @e[type=marker,tag={ns}.anchor_ahead]
-kill @e[type=marker,tag={ns}.anchor]
-""")
-
-	write_versioned_function("travel/waypoints/read_anchor", f"""
-#> read_anchor
-#
-# @output storage	{ns}:work wp : the anchor as a waypoint
+# @description		`execute summon` grants the execution position but not the execution rotation, so the
+#					rotation is recovered by facing a point one block ahead. That point is read off the
+#					marker standing on it instead of being selected back later: a chunk the caller only
+#					just teleported into still holds entities no selector can see.
 #
 
+execute positioned ^ ^ ^1 summon marker run function {ns}:v{version}/travel/waypoints/read_ahead
+""")
+
+	write_versioned_function("travel/waypoints/read_ahead", f"""
+#> read_ahead
+#
+# @executed			as a throwaway marker standing one block down the caller's line of sight
+#
+
+data modify storage {ns}:work ahead set value {{x:0.0d,y:0.0d,z:0.0d}}
+data modify storage {ns}:work ahead.x set from entity @s Pos[0]
+data modify storage {ns}:work ahead.y set from entity @s Pos[1]
+data modify storage {ns}:work ahead.z set from entity @s Pos[2]
+kill @s
+""")
+
+	write_versioned_function("travel/waypoints/face_ahead", """
+#> face_ahead
+#
+# @executed			as a marker standing on the caller's position
+#
+# @input macro		x, y, z : double - the point look_ahead read one block down the line of sight
+#
+
+$tp @s ~ ~ ~ facing $(x) $(y) $(z)
+""")
+
+	write_versioned_function("travel/waypoints/read_here", f"""
+#> read_here
+#
+# @executed			as a throwaway marker freshly summoned on the caller's position
+#
+# @input storage	{ns}:work ahead : the point to face, from look_ahead
+# @output storage	{ns}:work wp : the caller's own position and rotation, as a waypoint
+#
+
+function {ns}:v{version}/travel/waypoints/face_ahead with storage {ns}:work ahead
 data modify storage {ns}:work wp set value {{pos:[0.0d,0.0d,0.0d],rot:[0.0f,0.0f]}}
-data modify storage {ns}:work wp.pos set from entity @e[type=marker,tag={ns}.anchor,limit=1] Pos
-data modify storage {ns}:work wp.rot set from entity @e[type=marker,tag={ns}.anchor,limit=1] Rotation
+data modify storage {ns}:work wp.pos set from entity @s Pos
+data modify storage {ns}:work wp.rot set from entity @s Rotation
+kill @s
 """)
 
 	write_versioned_function("travel/waypoints/resolve_at", f"""
@@ -54,19 +67,33 @@ data modify storage {ns}:work wp.rot set from entity @e[type=marker,tag={ns}.anc
 #
 # @input macro		i : int - index of the waypoint whose `at` string needs resolving
 #
-# @description		Run the caller's coordinate string through `execute positioned` from the anchor, so
-#					`~`, `^` and plain numbers all mean exactly what they would in the original command.
+# @description		Run the caller's coordinate string through `execute positioned` from a marker standing
+#					where the caller was, so `~`, `^` and plain numbers all mean exactly what they would
+#					in the original command. Waypoints written that way are rare, so the marker is paid
+#					for here rather than once per launch.
 #
 
 $data modify storage {ns}:work one_at.at set from storage {ns}:work args.waypoints[$(i)].at
-execute as @e[type=marker,tag={ns}.anchor,limit=1] at @s run function {ns}:v{version}/travel/waypoints/resolve_at_run with storage {ns}:work one_at
+function {ns}:v{version}/travel/waypoints/look_ahead
+execute summon marker run function {ns}:v{version}/travel/waypoints/resolve_at_anchor
 $data modify storage {ns}:work args.waypoints[$(i)].pos set from storage {ns}:work resolved
+""")
+
+	write_versioned_function("travel/waypoints/resolve_at_anchor", f"""
+#> resolve_at_anchor
+#
+# @executed			as a throwaway marker freshly summoned on the caller's position
+#
+
+function {ns}:v{version}/travel/waypoints/face_ahead with storage {ns}:work ahead
+execute at @s run function {ns}:v{version}/travel/waypoints/resolve_at_run with storage {ns}:work one_at
+kill @s
 """)
 
 	write_versioned_function("travel/waypoints/resolve_at_run", f"""
 #> resolve_at_run
 #
-# @executed			as & at the anchor, so the string resolves against the caller's position and rotation
+# @executed			at the marker, so the string resolves against the caller's position and rotation
 # @input macro		at : string - a coordinate triple, ex: "~10 ~5 ~3" or "^ ^ ^12"
 #
 
@@ -81,7 +108,7 @@ kill @s
 
 def write_waypoints(ns: str, version: str) -> None:
 	""" Build the waypoint list from the caller's arguments, then normalize it into a uniform shape. """
-	write_anchor(ns, version)
+	write_capture(ns, version)
 
 	write_versioned_function("travel/waypoints/target_here", f"""
 #> target_here
@@ -92,9 +119,8 @@ def write_waypoints(ns: str, version: str) -> None:
 #					This is what lets a command block aim a cinematic with `~` and `^` coordinates.
 #
 
-function {ns}:v{version}/travel/waypoints/open_anchor
-function {ns}:v{version}/travel/waypoints/read_anchor
-function {ns}:v{version}/travel/waypoints/close_anchor
+function {ns}:v{version}/travel/waypoints/look_ahead
+execute summon marker run function {ns}:v{version}/travel/waypoints/read_here
 function {ns}:v{version}/travel/waypoints/raise_eyes
 function {ns}:v{version}/travel/waypoints/override_rotation
 data modify storage {ns}:work args.waypoints append from storage {ns}:work wp
@@ -218,9 +244,6 @@ scoreboard players operation #share {ns}.data = #duration {ns}.data
 scoreboard players operation #share {ns}.data /= #segments {ns}.data
 execute if score #share {ns}.data matches ..0 run scoreboard players set #share {ns}.data 1
 
-## Relative waypoint coordinates resolve against wherever the caller was executing
-function {ns}:v{version}/travel/waypoints/open_anchor
-
 ## Seed the running rotation, so a waypoint without one simply keeps the previous heading
 data modify storage {ns}:work last_rot set value [0.0f,0.0f]
 execute unless score #mode {ns}.data matches 2 run data modify storage {ns}:work last_rot set from entity @s Rotation
@@ -229,7 +252,6 @@ execute store result score #last_yaw {ns}.data run data get storage {ns}:work la
 
 scoreboard players set #w {ns}.data 0
 function {ns}:v{version}/travel/waypoints/normalize_loop
-function {ns}:v{version}/travel/waypoints/close_anchor
 """)
 
 	write_versioned_function("travel/waypoints/normalize_loop", f"""
