@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "advance.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA2C8C;AAC9C;AACA;AACA;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

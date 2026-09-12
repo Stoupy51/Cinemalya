@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "from_coords.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AAYgD;AAChD;AACA;AACA;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

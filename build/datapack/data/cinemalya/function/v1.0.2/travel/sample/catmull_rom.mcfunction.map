@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "catmull_rom.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/sampling.py"
+	],
+	"names": [],
+	"mappings": "AA4DuD;;;;;;AACvD;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

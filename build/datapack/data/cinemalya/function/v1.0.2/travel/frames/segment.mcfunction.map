@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "segment.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/frames.py"
+	],
+	"names": [],
+	"mappings": "AAiCmD;AACnD;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

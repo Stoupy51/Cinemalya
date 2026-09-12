@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "ease_out_of_cruise.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/frames.py"
+	],
+	"names": [],
+	"mappings": "AA+K8D;AAC9D;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

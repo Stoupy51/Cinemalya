@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "stop_one.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA4N+C;;;;;;;;AAC/C;AACA;AACA"
+}

@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "resolve_at_anchor.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AAiFgE;AAChE;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA"
+}

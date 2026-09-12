@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "read_ease.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/frames.py"
+	],
+	"names": [],
+	"mappings": "AAyFqD;AACrD;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

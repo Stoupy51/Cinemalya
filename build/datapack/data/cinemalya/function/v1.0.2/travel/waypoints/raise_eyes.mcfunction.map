@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "raise_eyes.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AA+JyD;AACzD;;;;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

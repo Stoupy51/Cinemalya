@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "one_player.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/intro/main.py"
+	],
+	"names": [],
+	"mappings": "AAuE8C;AAC9C;AACA;AACA;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

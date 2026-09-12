@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "release.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA6H8C;AAC9C;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

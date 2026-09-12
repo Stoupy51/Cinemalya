@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "read_duration.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/frames.py"
+	],
+	"names": [],
+	"mappings": "AA0DyD;;;;;;;;AACzD;AACA"
+}

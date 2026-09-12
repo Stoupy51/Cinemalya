@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "expand_rot.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AA+TyD;AACzD;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

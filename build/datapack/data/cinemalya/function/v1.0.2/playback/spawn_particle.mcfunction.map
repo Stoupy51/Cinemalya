@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "spawn_particle.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA4FqD;;;;;;;;;;AACrD;AACA"
+}

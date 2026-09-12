@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "set_particle.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AAwOiD;AACjD;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

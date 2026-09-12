@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "normalize_loop.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AAgQ6D;;;;;;;AAC7D;AACA"
+}

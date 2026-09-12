@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "from_waypoints.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AAiEmD;AACnD;AACA;AACA;;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

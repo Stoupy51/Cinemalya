@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "restore_gamemode.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA2IuD;AACvD;AACA;AACA;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

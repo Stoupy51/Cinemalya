@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "play.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/intro/main.py"
+	],
+	"names": [],
+	"mappings": "AA8IwC;;;;;;;;AACxC;AACA"
+}

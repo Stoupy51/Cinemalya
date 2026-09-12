@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "capture_resolved.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AAsG+D;;;;;;;;AAC/D;AACA;AACA"
+}

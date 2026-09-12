@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "remember_gamemode.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AAkQsD;AACtD;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

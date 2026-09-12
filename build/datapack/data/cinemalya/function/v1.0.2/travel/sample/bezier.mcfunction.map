@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "bezier.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/sampling.py"
+	],
+	"names": [],
+	"mappings": "AAkDkD;;;;;;AAClD;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

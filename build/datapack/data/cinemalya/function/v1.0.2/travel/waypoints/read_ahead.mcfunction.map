@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "read_ahead.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AAwByD;AACzD;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

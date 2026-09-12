@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "none.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/intro/main.py"
+	],
+	"names": [],
+	"mappings": "AAgEwC;AACxC;;;AACA;AACA;AACA;;AACA"
+}

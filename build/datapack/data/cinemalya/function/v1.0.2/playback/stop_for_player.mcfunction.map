@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "stop_for_player.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA4MsD;AACtD;AACA;AACA;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

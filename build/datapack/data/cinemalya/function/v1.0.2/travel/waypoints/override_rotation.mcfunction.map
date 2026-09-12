@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "override_rotation.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AAwNgE;AAChE;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "side_amount.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/control.py"
+	],
+	"names": [],
+	"mappings": "AAiGwD;AACxD;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

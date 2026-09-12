@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "at_player.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA6BgD;AAChD;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "launch.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/api.py"
+	],
+	"names": [],
+	"mappings": "AA0B8C;AAC9C;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

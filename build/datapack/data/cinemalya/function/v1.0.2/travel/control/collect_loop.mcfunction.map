@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "collect_loop.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/control.py"
+	],
+	"names": [],
+	"mappings": "AAoKyD;;;;;;;AACzD;AACA"
+}

@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "store_path.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AA2N+C;AAC/C;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

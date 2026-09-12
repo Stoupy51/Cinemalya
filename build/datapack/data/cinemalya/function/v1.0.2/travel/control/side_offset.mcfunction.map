@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "side_offset.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/control.py"
+	],
+	"names": [],
+	"mappings": "AAiIwD;AACxD;AACA;AACA;;;;;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

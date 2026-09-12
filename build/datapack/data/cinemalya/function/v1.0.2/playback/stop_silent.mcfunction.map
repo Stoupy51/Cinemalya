@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "stop_silent.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AA+LkD;AAClD;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "clear_path.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AAuKiD;;;;;;;;;;AACjD;AACA"
+}

@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "fade_in.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/intro/main.py"
+	],
+	"names": [],
+	"mappings": "AA+H2C;AAC3C;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

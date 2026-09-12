@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "attach.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AAoP2C;AAC3C;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

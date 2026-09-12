@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "face_ahead.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/waypoints.py"
+	],
+	"names": [],
+	"mappings": "AAqCyD;AACzD;AACA;AACA;;;;;;;;AACA;AACA;AACA;AACA;AACA;AACA"
+}

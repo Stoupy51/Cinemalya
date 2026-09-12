@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "through.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/control.py"
+	],
+	"names": [],
+	"mappings": "AAqJoD;AACpD;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

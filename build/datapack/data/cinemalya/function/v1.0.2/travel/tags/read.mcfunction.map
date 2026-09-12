@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "read.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/main.py"
+	],
+	"names": [],
+	"mappings": "AA4S8C;;;;;;;;AAC9C;AACA"
+}

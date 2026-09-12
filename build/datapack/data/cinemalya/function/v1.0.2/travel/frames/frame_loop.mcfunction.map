@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "frame_loop.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/frames.py"
+	],
+	"names": [],
+	"mappings": "AAuGsD;;;;;;;AACtD;AACA"
+}

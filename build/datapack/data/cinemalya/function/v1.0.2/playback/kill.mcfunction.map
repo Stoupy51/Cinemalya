@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "kill.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/playback/main.py"
+	],
+	"names": [],
+	"mappings": "AAyJ2C;AAC3C;AACA;AACA;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}
