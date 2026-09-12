@@ -93,10 +93,12 @@ function {ns}:v{version}/travel/frames/read_ease with storage {ns}:work sel
 # @input macro		i : int - the waypoint this segment arrives at
 #
 
-$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"linear"}} run scoreboard players set #ease {ns}.data 0
-$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"ease_in"}} run scoreboard players set #ease {ns}.data 1
-$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"ease_out"}} run scoreboard players set #ease {ns}.data 2
-$execute if data storage {ns}:work args.waypoints[$(i)]{{ease:"ease_in_out"}} run scoreboard players set #ease {ns}.data 3
+data remove storage {ns}:work sel.ease_linear
+$data modify storage {ns}:work sel.ease_linear set from storage {ns}:work args.waypoints[$(i)].ease
+execute if data storage {ns}:work sel{{ease_linear:"linear"}} run scoreboard players set #ease {ns}.data 0
+execute if data storage {ns}:work sel{{ease_linear:"ease_in"}} run scoreboard players set #ease {ns}.data 1
+execute if data storage {ns}:work sel{{ease_linear:"ease_out"}} run scoreboard players set #ease {ns}.data 2
+execute if data storage {ns}:work sel{{ease_linear:"ease_in_out"}} run scoreboard players set #ease {ns}.data 3
 """)
 
 	write_versioned_function("travel/frames/frame_loop", f"""

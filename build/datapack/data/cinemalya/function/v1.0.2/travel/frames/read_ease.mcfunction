@@ -8,8 +8,10 @@
 # @input macro		i : int - the waypoint this segment arrives at
 #
 
-$execute if data storage cinemalya:work args.waypoints[$(i)]{ease:"linear"} run scoreboard players set #ease cinemalya.data 0
-$execute if data storage cinemalya:work args.waypoints[$(i)]{ease:"ease_in"} run scoreboard players set #ease cinemalya.data 1
-$execute if data storage cinemalya:work args.waypoints[$(i)]{ease:"ease_out"} run scoreboard players set #ease cinemalya.data 2
-$execute if data storage cinemalya:work args.waypoints[$(i)]{ease:"ease_in_out"} run scoreboard players set #ease cinemalya.data 3
+data remove storage cinemalya:work sel.ease_linear
+$data modify storage cinemalya:work sel.ease_linear set from storage cinemalya:work args.waypoints[$(i)].ease
+execute if data storage cinemalya:work sel{ease_linear:"linear"} run scoreboard players set #ease cinemalya.data 0
+execute if data storage cinemalya:work sel{ease_linear:"ease_in"} run scoreboard players set #ease cinemalya.data 1
+execute if data storage cinemalya:work sel{ease_linear:"ease_out"} run scoreboard players set #ease cinemalya.data 2
+execute if data storage cinemalya:work sel{ease_linear:"ease_in_out"} run scoreboard players set #ease cinemalya.data 3
 
