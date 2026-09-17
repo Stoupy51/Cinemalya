@@ -12,7 +12,7 @@ from .travel.main import main as travel
 def same_score(objective: str, target: str, score: str) -> JsonDict:
 	""" entity_scores predicate where 'objective' equals the fixed score 'target'.'score'. """
 	bound: JsonDict = {"type": "minecraft:score", "target": {"type": "minecraft:fixed", "name": target}, "score": score}
-	return {"condition": "minecraft:entity_scores", "entity": "this", "scores": {objective: {"min": bound, "max": bound}}}
+	return {"type": "minecraft:entity_scores", "entity": "this", "scores": {objective: {"min": bound, "max": bound}}}
 
 
 # Main function is run just before finalyzing the build process (zip, headers, lang, ...)
