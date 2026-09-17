@@ -3,22 +3,12 @@
 	"entity": "this",
 	"scores": {
 		"cinemalya.id": {
-			"min": {
-				"type": "minecraft:score",
-				"target": {
-					"type": "minecraft:fixed",
-					"name": "#player_id"
-				},
-				"score": "cinemalya.id"
+			"type": "minecraft:score",
+			"target": {
+				"type": "minecraft:fixed",
+				"name": "#player_id"
 			},
-			"max": {
-				"type": "minecraft:score",
-				"target": {
-					"type": "minecraft:fixed",
-					"name": "#player_id"
-				},
-				"score": "cinemalya.id"
-			}
+			"score": "cinemalya.id"
 		}
 	}
 }
