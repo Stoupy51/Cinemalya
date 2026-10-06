@@ -1,6 +1,6 @@
 {
 	"values": [
 		"#cinemalya:dependencies",
-		"cinemalya:v1.0.4/load/enumerate"
+		"cinemalya:v1.0.5/load/enumerate"
 	]
 }
