@@ -229,20 +229,17 @@ execute if data storage {ns}:work args.pitch store result storage {ns}:work wp.r
 	write_versioned_function("travel/waypoints/normalize", f"""
 #> normalize
 #
-# @output score		#segments, #share {ns}.data
+# @output score		#segments {ns}.data
 #
-# @description		Give every waypoint a rotation and a duration, and unwrap the yaws so the camera
-#					always turns the short way round instead of spinning most of a circle.
+# @description		Give every waypoint a rotation, and unwrap the yaws so the camera always turns the
+#					short way round instead of spinning most of a circle.
 #
 
-## One segment per gap between waypoints, each getting an equal share of the total by default
+## One segment per gap between waypoints
 execute store result score #count {ns}.data run data get storage {ns}:work args.waypoints
 scoreboard players operation #segments {ns}.data = #count {ns}.data
 scoreboard players remove #segments {ns}.data 1
 execute if score #segments {ns}.data matches ..0 run scoreboard players set #segments {ns}.data 1
-scoreboard players operation #share {ns}.data = #duration {ns}.data
-scoreboard players operation #share {ns}.data /= #segments {ns}.data
-execute if score #share {ns}.data matches ..0 run scoreboard players set #share {ns}.data 1
 
 ## Seed the running rotation, so a waypoint without one simply keeps the previous heading
 data modify storage {ns}:work last_rot set value [0.0f,0.0f]
@@ -270,19 +267,13 @@ function {ns}:v{version}/travel/waypoints/normalize_loop
 #
 # @input macro		i : int - index of the waypoint to complete
 #
-# @description		Inherit the missing rotation and duration, then unwrap this waypoint's yaw.
+# @description		Inherit the missing rotation, bound the duration, then unwrap this waypoint's yaw.
 #
 
 $execute if data storage {ns}:work args.waypoints[$(i)].args run function {ns}:v{version}/travel/waypoints/expand with storage {ns}:work sel
 $execute if data storage {ns}:work args.waypoints[$(i)].at run function {ns}:v{version}/travel/waypoints/resolve_at with storage {ns}:work sel
 $execute unless data storage {ns}:work args.waypoints[$(i)].rot run data modify storage {ns}:work args.waypoints[$(i)].rot set from storage {ns}:work last_rot
-$execute unless data storage {ns}:work args.waypoints[$(i)].duration store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #share {ns}.data
-
-## A waypoint duration drives its own segment's frame loop, so it gets the same bounds as the travel total
-$execute store result score #wp_duration {ns}.data run data get storage {ns}:work args.waypoints[$(i)].duration
-execute if score #wp_duration {ns}.data matches ..0 run scoreboard players set #wp_duration {ns}.data 1
-execute if score #wp_duration {ns}.data matches {MAX_DURATION + 1}.. run scoreboard players set #wp_duration {ns}.data {MAX_DURATION}
-$execute store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #wp_duration {ns}.data
+$execute if data storage {ns}:work args.waypoints[$(i)].duration run function {ns}:v{version}/travel/waypoints/clamp_duration with storage {ns}:work sel
 
 ## Keep the yaw within half a turn of the previous one (a 350 degree spin becomes a 10 degree one)
 $execute store result score #yaw {ns}.data run data get storage {ns}:work args.waypoints[$(i)].rot[0] 1000
@@ -293,6 +284,20 @@ execute if score #diff {ns}.data matches ..-180000 run scoreboard players add #y
 $execute store result storage {ns}:work args.waypoints[$(i)].rot[0] float 0.001 run scoreboard players get #yaw {ns}.data
 scoreboard players operation #last_yaw {ns}.data = #yaw {ns}.data
 $data modify storage {ns}:work last_rot set from storage {ns}:work args.waypoints[$(i)].rot
+""")
+
+	write_versioned_function("travel/waypoints/clamp_duration", f"""
+#> clamp_duration
+#
+# @input macro		i : int - index of the waypoint whose duration to bound
+#
+# @description		A waypoint duration drives its own segment's frames, so it gets the same bounds as the travel total.
+#
+
+$execute store result score #wp_duration {ns}.data run data get storage {ns}:work args.waypoints[$(i)].duration
+execute if score #wp_duration {ns}.data matches ..0 run scoreboard players set #wp_duration {ns}.data 1
+execute if score #wp_duration {ns}.data matches {MAX_DURATION + 1}.. run scoreboard players set #wp_duration {ns}.data {MAX_DURATION}
+$execute store result storage {ns}:work args.waypoints[$(i)].duration int 1 run scoreboard players get #wp_duration {ns}.data
 """)
 
 	write_versioned_function("travel/waypoints/expand", f"""
