@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "wrap.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/editor/export.py"
+	],
+	"names": [],
+	"mappings": "AAoIgD;;;;;;;;;;;;;;;;;;;;;;;AAChD;AACA;AACA"
+}

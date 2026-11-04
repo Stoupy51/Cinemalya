@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "root.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/sampling.py"
+	],
+	"names": [],
+	"mappings": "AAsHgD;AAChD;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

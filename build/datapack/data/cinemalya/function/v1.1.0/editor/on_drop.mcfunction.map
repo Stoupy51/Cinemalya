@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "on_drop.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/editor/main.py"
+	],
+	"names": [],
+	"mappings": "AAiI4C;AAC5C;AACA;AACA;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

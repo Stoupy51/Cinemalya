@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "to_hand.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/editor/main.py"
+	],
+	"names": [],
+	"mappings": "AA2J4C;;;;;;;;AAC5C;AACA;AACA"
+}

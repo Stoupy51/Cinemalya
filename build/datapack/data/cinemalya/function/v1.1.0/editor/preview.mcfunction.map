@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "preview.mcfunction",
+	"sourceRoot": "../../../../../../..",
+	"sources": [
+		"src/editor/export.py"
+	],
+	"names": [],
+	"mappings": "AA6I4C;AAC5C;AACA;AACA;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

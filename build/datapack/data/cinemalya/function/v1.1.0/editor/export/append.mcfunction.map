@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "append.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/editor/export.py"
+	],
+	"names": [],
+	"mappings": "AA+HkD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAClD;AACA;AACA"
+}

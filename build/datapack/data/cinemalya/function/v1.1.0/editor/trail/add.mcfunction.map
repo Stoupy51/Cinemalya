@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "add.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/editor/main.py"
+	],
+	"names": [],
+	"mappings": "AA8O8C;AAC9C;;;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}

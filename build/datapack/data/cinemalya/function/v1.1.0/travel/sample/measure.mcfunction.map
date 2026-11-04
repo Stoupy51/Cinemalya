@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "measure.mcfunction",
+	"sourceRoot": "../../../../../../../..",
+	"sources": [
+		"src/travel/sampling.py"
+	],
+	"names": [],
+	"mappings": "AA+DmD;AACnD;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"
+}
