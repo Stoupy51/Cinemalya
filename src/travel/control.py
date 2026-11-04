@@ -177,3 +177,4 @@ function {ns}:v{version}/travel/control/collect_loop
 $data modify storage {ns}:work control.points append from storage {ns}:work args.waypoints[$(i)].pos
 $data modify storage {ns}:work rot_control.points append from storage {ns}:work args.waypoints[$(i)].rot
 """)
+

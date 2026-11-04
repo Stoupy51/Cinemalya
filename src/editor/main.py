@@ -3,7 +3,6 @@
 Right click places a keyframe, left click removes the last one, sneaking and right clicking previews the path,
 and dropping the item opens the export. Every editor shares one path, kept in `<ns>:editor keyframes`.
 """
-# ruff: noqa: E501
 # Imports
 from beet import Enchantment
 from stewbeet import Mem, write_versioned_function

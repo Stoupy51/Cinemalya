@@ -232,3 +232,4 @@ def main() -> None:
 	write_tick(ns, version)
 	write_ending(ns, version)
 	write_stop(ns, version)
+

@@ -1,4 +1,3 @@
-# ruff: noqa: E501
 # Imports
 from stewbeet import Mem, write_versioned_function
 
@@ -166,3 +165,4 @@ def main() -> None:
 
 	write_start(ns, version)
 	write_display(ns, version)
+
