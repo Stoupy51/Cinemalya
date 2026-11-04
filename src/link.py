@@ -4,6 +4,7 @@ from stewbeet import set_json_encoder, write_load_file, write_tick_file
 from stouputils.typing import JsonDict
 
 from .api import main as api
+from .editor.main import main as editor
 from .intro.main import main as intro
 from .playback.main import main as playback
 from .travel.main import main as travel
@@ -34,6 +35,8 @@ scoreboard objectives add {ns}.delay dummy
 scoreboard objectives add {ns}.frame dummy
 scoreboard objectives add {ns}.smoothing dummy
 scoreboard objectives add {ns}.ground dummy
+scoreboard objectives add {ns}.click minecraft.used:minecraft.carrot_on_a_stick
+scoreboard objectives add {ns}.drop minecraft.dropped:minecraft.carrot_on_a_stick
 
 # A /reload keeps the entities and their sampled paths, so only the live counter has to be rebuilt
 execute store result score #entities {ns}.data if entity @e[tag={ns}.cinematic]
@@ -43,6 +46,7 @@ execute unless score #next_id {ns}.id matches 0.. run scoreboard players set #ne
 	write_tick_file(f"""
 # Cinematic playback (the score gate keeps the selector out of the tick when nothing is playing)
 execute if score #entities {ns}.data matches 1.. as @e[type=item_display,tag={ns}.cinematic] at @s run function {ns}:v{version}/playback/tick
+execute if score #editors {ns}.data matches 1.. run function {ns}:v{version}/editor/tick
 """)
 
 	# The public entry points, then everything they call into
@@ -50,4 +54,5 @@ execute if score #entities {ns}.data matches 1.. as @e[type=item_display,tag={ns
 	travel()
 	playback()
 	intro()
+	editor()
 

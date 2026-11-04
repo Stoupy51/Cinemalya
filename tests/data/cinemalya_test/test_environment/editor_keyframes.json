@@ -1,0 +1,4 @@
+{
+	"type": "minecraft:function",
+	"setup": "cinemalya_test:fresh_editor"
+}

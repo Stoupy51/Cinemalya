@@ -9,8 +9,13 @@ ENTRY_POINTS: dict[str, str] = {
 	"launch_path":      "travel/from_waypoints",
 	"stop":             "playback/stop",
 	"intro":            "intro/start",
+	"editor/start":     "editor/start",
+	"editor/stop":      "editor/stop",
 }
 """ Public function tag name -> the versioned function it dispatches to once the version check passes. """
+
+NO_OPTIONS: tuple[str, ...] = ("editor/start", "editor/stop")
+""" Entry points that read no option, so they are called without a `with` compound. """
 
 SIGNALS: tuple[str, ...] = ("on_launch", "on_finish")
 """ Function tags the library fires so a datapack can react to a cinematic starting or ending. """
@@ -34,7 +39,7 @@ def main() -> None:
 #					sampling step from zeroed constants and hang the server inside the spline sampler.
 #
 
-$execute if score #{ns}.loaded load.status matches 1 {version_guard} run function {ns}:v{version}/{target} {{with:$(with)}}
+{"" if tag_name in NO_OPTIONS else "$"}execute if score #{ns}.loaded load.status matches 1 {version_guard} run function {ns}:v{version}/{target}{"" if tag_name in NO_OPTIONS else " {with:$(with)}"}
 """, tags=[f"{ns}:v{major}/{tag_name}"])
 
 	# Signals are pure extension points: the library owns the tag, datapacks own its members

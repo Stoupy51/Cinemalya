@@ -40,6 +40,7 @@ Every entry point takes one `with` compound, so each field inside stays optional
 | Fly through several waypoints           | [`launch_path`](#launch-path)           |
 | Open a scene with a title card          | [`intro`](#intro)                       |
 | Cut a cinematic short                   | [`stop`](#stop)                         |
+| Record a path in game                   | [`editor/start`](#editor)               |
 | React when one starts or ends           | [signals](#signals)                     |
 | Tune anything                           | [options](#options)                     |
 
@@ -91,7 +92,7 @@ execute as <player> run function #cinemalya:v1/launch_path {with:{duration:90,ea
 | `pos` / `rot` | `{pos:[0.5,90.0,0.5],rot:[0.0,20.0]}` | Explicit |
 | `at` | `{at:"~30 ~12 ~-30",rot:[135,20]}` | Relative to where the command ran, `~` or `^` |
 
-Missing `rot` keeps the previous heading; missing `duration` takes an equal share of the total. `at` overrides `pos`. Local `^` needs an execution rotation, so add `rotated` when using it from a command block.
+Missing `rot` keeps the previous heading. The waypoints with no `duration` share theirs in proportion to the length of the segment arriving at them, so the camera flies at one steady speed through them; together they get the part of the total they would get as equal shares. `at` overrides `pos`. Local `^` needs an execution rotation, so add `rotated` when using it from a command block.
 
 **Easing.** A path-level `ease` shapes the *whole* travel: it accelerates off the first waypoint, cruises through the middle ones at a steady pace, and settles onto the last. Put `ease` on a waypoint instead to shape only the hop arriving there:
 
@@ -120,6 +121,24 @@ execute as <player> run function #cinemalya:v1/stop {with:{}}
 ```
 
 The player is left exactly where the camera was, so you decide where they belong. `restore:false` leaves them in spectator too.
+
+<a id="editor"></a>
+### `#cinemalya:v1/editor/start`
+
+Record a path in game instead of typing coordinates. `start` gives you the editor item, `editor/stop` takes it back.
+
+```mcfunction
+function #cinemalya:v1/editor/start
+```
+
+| With the item in hand | Does                                                     |
+|-----------------------|----------------------------------------------------------|
+| Right click           | Place a keyframe at your eyes, with your rotation        |
+| Left click            | Remove the last keyframe                                 |
+| Sneak + right click   | Preview the path                                         |
+| Drop it               | Open the export, with the item handed back to you        |
+
+The export shows two `launch_path` commands to copy into a command block: one with absolute positions, one with positions relative to its `execute positioned` coordinates, which start on the first keyframe, so editing them moves the whole path. Both last `duration:200` ticks and move between keyframes with `ease:"linear"`, written in the command so you edit them there (`ease_in`, `ease_out` and `ease_in_out` are the other choices). Every other option is written with its default value too, except `particle` and `spline`. Every editor shares the same path, up to 128 keyframes, and it is cleared when the last of them stops.
 
 <br>
 
@@ -154,9 +173,9 @@ Every argument that ends up bounding a loop is clamped at launch, so a typo cost
 | `smoothing`             | `1` to `100`     | Clamped                                               |
 | `waypoints`             | `128`            | The launch is refused and returns `fail`              |
 | `tags`                  | `32`             | The extras are dropped                                |
-| Frames emitted          | `1200`           | The smoothing rises so the path keeps its full length |
+| Frames emitted          | `600`            | The smoothing rises so the path keeps its full length |
 
-A travel asking for more frames than the budget gets a softer `smoothing` instead of a shortened path, so `duration:36000` still lands where you told it to.
+A travel asking for more frames than the budget gets a softer `smoothing` instead of a shortened path, so `duration:36000` still lands where you told it to. The cap keeps a launch under the `max_command_sequence_length` default of 65536 commands, past which Minecraft drops the rest of it and no camera appears.
 
 <br>
 
