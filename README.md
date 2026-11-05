@@ -131,6 +131,8 @@ Record a path in game instead of typing coordinates. `start` gives you the edito
 function #cinemalya:v1/editor/start
 ```
 
+https://github.com/user-attachments/assets/0180165c-f481-47a7-9d31-23b4a836decd
+
 | With the item in hand | Does                                                     |
 |-----------------------|----------------------------------------------------------|
 | Right click           | Place a keyframe at your eyes, with your rotation        |
