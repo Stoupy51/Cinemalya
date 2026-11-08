@@ -220,7 +220,22 @@ tag @s remove {ns}.temp
 
 	write_versioned_function("playback/stop_one", f"""
 execute if score #restore {ns}.data matches 1 run function {ns}:v{version}/playback/restore_gamemode
+execute if score #restore {ns}.data matches 0 run function {ns}:v{version}/playback/carry_gamemode
 function {ns}:v{version}/playback/kill
+""")
+
+	write_versioned_function("playback/carry_gamemode", f"""
+#> carry_gamemode
+#
+# @executed			as the cinematic entity, with the rider tagged {ns}.temp
+#
+# @description		The rider is still a spectator and the camera is about to be killed: park the gamemode it remembered on the player,
+#					so that a cinematic launched right after still knows what to give back.
+#
+
+execute if entity @s[tag={ns}.was_survival] run tag @a[tag={ns}.temp,limit=1] add {ns}.carry_survival
+execute if entity @s[tag={ns}.was_adventure] run tag @a[tag={ns}.temp,limit=1] add {ns}.carry_adventure
+execute if entity @s[tag={ns}.was_creative] run tag @a[tag={ns}.temp,limit=1] add {ns}.carry_creative
 """)
 
 

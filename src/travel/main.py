@@ -267,6 +267,14 @@ spectate @s @p[tag={ns}.temp]
 execute if entity @p[tag={ns}.temp,gamemode=survival] run tag @s add {ns}.was_survival
 execute if entity @p[tag={ns}.temp,gamemode=adventure] run tag @s add {ns}.was_adventure
 execute if entity @p[tag={ns}.temp,gamemode=creative] run tag @s add {ns}.was_creative
+
+# A player still in spectator was carried over from a cinematic that a launch just replaced
+execute if entity @p[tag={ns}.temp,gamemode=spectator,tag={ns}.carry_survival] run tag @s add {ns}.was_survival
+execute if entity @p[tag={ns}.temp,gamemode=spectator,tag={ns}.carry_adventure] run tag @s add {ns}.was_adventure
+execute if entity @p[tag={ns}.temp,gamemode=spectator,tag={ns}.carry_creative] run tag @s add {ns}.was_creative
+tag @p[tag={ns}.temp] remove {ns}.carry_survival
+tag @p[tag={ns}.temp] remove {ns}.carry_adventure
+tag @p[tag={ns}.temp] remove {ns}.carry_creative
 """)
 
 
