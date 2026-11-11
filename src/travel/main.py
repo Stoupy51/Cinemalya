@@ -95,7 +95,7 @@ def write_defaults(ns: str, version: str) -> None:
 
 ## Optional arguments
 execute unless data storage {ns}:work args.duration run data modify storage {ns}:work args.duration set value 60
-execute unless data storage {ns}:work args.smoothing run data modify storage {ns}:work args.smoothing set value 2
+execute unless data storage {ns}:work args.smoothing run data modify storage {ns}:work args.smoothing set value 1
 execute unless data storage {ns}:work args.delay run data modify storage {ns}:work args.delay set value 0
 execute unless data storage {ns}:work args.arc_side run data modify storage {ns}:work args.arc_side set value 0.0
 execute unless data storage {ns}:work args.arc_height run data modify storage {ns}:work args.arc_height set value 20.0

@@ -48,7 +48,7 @@ def number(key: str) -> str:
 def write_export(ns: str, version: str) -> None:
 	""" The export dialog, the command text it shows, and the preview it offers. """
 	major: str = version.split(".")[0]
-	launch: str = f'function #{ns}:v{major}/launch_path {{with:{{duration:{EXPORT_DURATION},ease:"{EXPORT_EASE}",smoothing:2,delay:0,gamemode:"restore",precise_rotation:true,tags:[],waypoints:['
+	launch: str = f'function #{ns}:v{major}/launch_path {{with:{{duration:{EXPORT_DURATION},ease:"{EXPORT_EASE}",smoothing:1,delay:0,gamemode:"restore",precise_rotation:true,tags:[],waypoints:['
 	dialog: JsonDict = {
 		"type": "minecraft:multi_action",
 		"title": {"text": "Cinemalya Export", "color": "gold", "bold": True},

@@ -150,7 +150,7 @@ The export shows two `launch_path` commands to copy into a command block: one wi
 | Field              | Type   | Default     | Meaning                                                   |
 |--------------------|--------|-------------|-----------------------------------------------------------|
 | `duration`         | int    | `60`        | Length of the travel, in ticks                            |
-| `smoothing`        | int    | `2`         | Ticks between frames. Higher is cheaper and softer        |
+| `smoothing`        | int    | `1`         | Ticks between frames. Higher is cheaper and softer        |
 | `delay`            | int    | `0`         | Ticks to hold still before moving                         |
 | `ease`             | string | `"linear"`  | `linear`, `ease_in`, `ease_out`, `ease_in_out`            |
 | `spline`           | string | auto        | `bezier` (2 waypoints) or `catmull_rom` (more)            |

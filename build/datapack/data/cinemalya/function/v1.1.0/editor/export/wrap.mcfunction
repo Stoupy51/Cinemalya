@@ -21,6 +21,6 @@
 #			rel (unknown)
 #
 
-$data modify storage cinemalya:editor export.abs set value 'execute as @a run function #cinemalya:v1/launch_path {with:{duration:200,ease:"linear",smoothing:2,delay:0,gamemode:"restore",precise_rotation:true,tags:[],waypoints:[$(abs)]}}'
-$data modify storage cinemalya:editor export.rel set value 'execute as @a positioned $(x_s)$(x_i).$(x_p)$(x_f) $(y_s)$(y_i).$(y_p)$(y_f) $(z_s)$(z_i).$(z_p)$(z_f) run function #cinemalya:v1/launch_path {with:{duration:200,ease:"linear",smoothing:2,delay:0,gamemode:"restore",precise_rotation:true,tags:[],waypoints:[$(rel)]}}'
+$data modify storage cinemalya:editor export.abs set value 'execute as @a run function #cinemalya:v1/launch_path {with:{duration:200,ease:"linear",smoothing:1,delay:0,gamemode:"restore",precise_rotation:true,tags:[],waypoints:[$(abs)]}}'
+$data modify storage cinemalya:editor export.rel set value 'execute as @a positioned $(x_s)$(x_i).$(x_p)$(x_f) $(y_s)$(y_i).$(y_p)$(y_f) $(z_s)$(z_i).$(z_p)$(z_f) run function #cinemalya:v1/launch_path {with:{duration:200,ease:"linear",smoothing:1,delay:0,gamemode:"restore",precise_rotation:true,tags:[],waypoints:[$(rel)]}}'
 

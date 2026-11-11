@@ -20,7 +20,7 @@ execute unless data storage cinemalya:work intro.target_function run data modify
 execute unless data storage cinemalya:work intro.selector run data modify storage cinemalya:work intro.selector set value "@a"
 execute unless data storage cinemalya:work intro.display_time run data modify storage cinemalya:work intro.display_time set value 130
 execute unless data storage cinemalya:work intro.duration run data modify storage cinemalya:work intro.duration set value 50
-execute unless data storage cinemalya:work intro.smoothing run data modify storage cinemalya:work intro.smoothing set value 3
+execute unless data storage cinemalya:work intro.smoothing run data modify storage cinemalya:work intro.smoothing set value 1
 execute unless data storage cinemalya:work intro.sound run data modify storage cinemalya:work intro.sound set value "minecraft:item.mace.smash_ground_heavy"
 execute unless data storage cinemalya:work intro.title run data modify storage cinemalya:work intro.title set value ""
 execute unless data storage cinemalya:work intro.subtitle run data modify storage cinemalya:work intro.subtitle set value ""
