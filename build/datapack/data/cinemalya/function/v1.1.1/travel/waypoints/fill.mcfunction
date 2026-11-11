@@ -1,0 +1,27 @@
+
+#> cinemalya:v1.1.1/travel/waypoints/fill
+#
+# @within	cinemalya:v1.1.1/travel/waypoints/normalize_one with storage cinemalya:work sel
+#
+# @args		i (unknown)
+#
+# @input macro		i : int - index of the waypoint to complete
+# 
+# @description		Inherit the missing rotation, bound the duration, then unwrap this waypoint's yaw.
+#
+
+$execute if data storage cinemalya:work args.waypoints[$(i)].args run function cinemalya:v1.1.1/travel/waypoints/expand with storage cinemalya:work sel
+$execute if data storage cinemalya:work args.waypoints[$(i)].at run function cinemalya:v1.1.1/travel/waypoints/resolve_at with storage cinemalya:work sel
+$execute unless data storage cinemalya:work args.waypoints[$(i)].rot run data modify storage cinemalya:work args.waypoints[$(i)].rot set from storage cinemalya:work last_rot
+$execute if data storage cinemalya:work args.waypoints[$(i)].duration run function cinemalya:v1.1.1/travel/waypoints/clamp_duration with storage cinemalya:work sel
+
+## Keep the yaw within half a turn of the previous one (a 350 degree spin becomes a 10 degree one)
+$execute store result score #yaw cinemalya.data run data get storage cinemalya:work args.waypoints[$(i)].rot[0] 1000
+scoreboard players operation #diff cinemalya.data = #yaw cinemalya.data
+scoreboard players operation #diff cinemalya.data -= #last_yaw cinemalya.data
+execute if score #diff cinemalya.data matches 180000.. run scoreboard players remove #yaw cinemalya.data 360000
+execute if score #diff cinemalya.data matches ..-180000 run scoreboard players add #yaw cinemalya.data 360000
+$execute store result storage cinemalya:work args.waypoints[$(i)].rot[0] float 0.001 run scoreboard players get #yaw cinemalya.data
+scoreboard players operation #last_yaw cinemalya.data = #yaw cinemalya.data
+$data modify storage cinemalya:work last_rot set from storage cinemalya:work args.waypoints[$(i)].rot
+

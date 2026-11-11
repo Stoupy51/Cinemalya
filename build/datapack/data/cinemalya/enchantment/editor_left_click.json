@@ -20,7 +20,7 @@
       {
         "effect": {
           "type": "minecraft:run_function",
-          "function": "cinemalya:v1.1.0/editor/remove_last"
+          "function": "cinemalya:v1.1.1/editor/remove_last"
         }
       }
     ]
