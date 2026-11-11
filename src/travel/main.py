@@ -252,7 +252,9 @@ data modify entity @s item.components."minecraft:custom_data".particle set from 
 
 execute unless entity @s[tag={ns}.keep_gamemode] run function {ns}:v{version}/travel/remember_gamemode
 scoreboard players operation @p[tag={ns}.temp] {ns}.id = @s {ns}.id
-gamemode spectator @p[tag={ns}.temp]
+
+# As the player: a gamemode set by anyone else is announced in their chat
+execute as @p[tag={ns}.temp] run gamemode spectator @s
 spectate @s @p[tag={ns}.temp]
 """)
 

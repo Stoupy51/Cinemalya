@@ -146,9 +146,11 @@ execute at @s positioned ~ ~-1.6 ~ as @a[distance=0,tag={ns}.temp,limit=1] at @s
 #
 
 execute if entity @s[tag={ns}.keep_gamemode] run return 0
-execute if entity @s[tag={ns}.was_survival] run gamemode survival @a[distance=0,tag={ns}.temp,limit=1]
-execute if entity @s[tag={ns}.was_adventure] run gamemode adventure @a[distance=0,tag={ns}.temp,limit=1]
-execute if entity @s[tag={ns}.was_creative] run gamemode creative @a[distance=0,tag={ns}.temp,limit=1]
+
+# As the rider: a gamemode set by anyone else is announced in their chat
+execute if entity @s[tag={ns}.was_survival] as @a[distance=0,tag={ns}.temp,limit=1] run gamemode survival @s
+execute if entity @s[tag={ns}.was_adventure] as @a[distance=0,tag={ns}.temp,limit=1] run gamemode adventure @s
+execute if entity @s[tag={ns}.was_creative] as @a[distance=0,tag={ns}.temp,limit=1] run gamemode creative @s
 """)
 
 	write_versioned_function("playback/kill", f"""

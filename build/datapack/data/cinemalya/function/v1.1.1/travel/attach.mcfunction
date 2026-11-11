@@ -10,6 +10,8 @@
 
 execute unless entity @s[tag=cinemalya.keep_gamemode] run function cinemalya:v1.1.1/travel/remember_gamemode
 scoreboard players operation @p[tag=cinemalya.temp] cinemalya.id = @s cinemalya.id
-gamemode spectator @p[tag=cinemalya.temp]
+
+# As the player: a gamemode set by anyone else is announced in their chat
+execute as @p[tag=cinemalya.temp] run gamemode spectator @s
 spectate @s @p[tag=cinemalya.temp]
 

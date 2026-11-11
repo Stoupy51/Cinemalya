@@ -10,7 +10,9 @@
 #
 
 execute if entity @s[tag=cinemalya.keep_gamemode] run return 0
-execute if entity @s[tag=cinemalya.was_survival] run gamemode survival @a[distance=0,tag=cinemalya.temp,limit=1]
-execute if entity @s[tag=cinemalya.was_adventure] run gamemode adventure @a[distance=0,tag=cinemalya.temp,limit=1]
-execute if entity @s[tag=cinemalya.was_creative] run gamemode creative @a[distance=0,tag=cinemalya.temp,limit=1]
+
+# As the rider: a gamemode set by anyone else is announced in their chat
+execute if entity @s[tag=cinemalya.was_survival] as @a[distance=0,tag=cinemalya.temp,limit=1] run gamemode survival @s
+execute if entity @s[tag=cinemalya.was_adventure] as @a[distance=0,tag=cinemalya.temp,limit=1] run gamemode adventure @s
+execute if entity @s[tag=cinemalya.was_creative] as @a[distance=0,tag=cinemalya.temp,limit=1] run gamemode creative @s
 
