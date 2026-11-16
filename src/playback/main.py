@@ -133,8 +133,8 @@ function {ns}:v{version}/playback/kill
 #
 
 execute at @s run tp @a[tag={ns}.temp,limit=1] ~ ~-1.6 ~ ~ ~
-execute at @s positioned ~ ~-1.6 ~ run function {ns}:v{version}/playback/restore_gamemode
-execute at @s positioned ~ ~-1.6 ~ as @a[distance=0,tag={ns}.temp,limit=1] at @s run function #{ns}:v1/signals/on_finish
+function {ns}:v{version}/playback/restore_gamemode
+execute as @a[tag={ns}.temp,limit=1] at @s run function #{ns}:v1/signals/on_finish
 """)
 
 	write_versioned_function("playback/restore_gamemode", f"""
@@ -148,9 +148,9 @@ execute at @s positioned ~ ~-1.6 ~ as @a[distance=0,tag={ns}.temp,limit=1] at @s
 execute if entity @s[tag={ns}.keep_gamemode] run return 0
 
 # As the rider: a gamemode set by anyone else is announced in their chat
-execute if entity @s[tag={ns}.was_survival] as @a[distance=0,tag={ns}.temp,limit=1] run gamemode survival @s
-execute if entity @s[tag={ns}.was_adventure] as @a[distance=0,tag={ns}.temp,limit=1] run gamemode adventure @s
-execute if entity @s[tag={ns}.was_creative] as @a[distance=0,tag={ns}.temp,limit=1] run gamemode creative @s
+execute if entity @s[tag={ns}.was_survival] as @a[tag={ns}.temp,limit=1] run gamemode survival @s
+execute if entity @s[tag={ns}.was_adventure] as @a[tag={ns}.temp,limit=1] run gamemode adventure @s
+execute if entity @s[tag={ns}.was_creative] as @a[tag={ns}.temp,limit=1] run gamemode creative @s
 """)
 
 	write_versioned_function("playback/kill", f"""

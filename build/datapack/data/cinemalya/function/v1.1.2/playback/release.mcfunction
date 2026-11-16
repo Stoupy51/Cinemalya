@@ -10,6 +10,6 @@
 #
 
 execute at @s run tp @a[tag=cinemalya.temp,limit=1] ~ ~-1.6 ~ ~ ~
-execute at @s positioned ~ ~-1.6 ~ run function cinemalya:v1.1.2/playback/restore_gamemode
-execute at @s positioned ~ ~-1.6 ~ as @a[distance=0,tag=cinemalya.temp,limit=1] at @s run function #cinemalya:v1/signals/on_finish
+function cinemalya:v1.1.2/playback/restore_gamemode
+execute as @a[tag=cinemalya.temp,limit=1] at @s run function #cinemalya:v1/signals/on_finish
 
