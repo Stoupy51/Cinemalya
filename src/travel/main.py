@@ -135,6 +135,11 @@ execute if data storage {ns}:work args{{gamemode:"none"}} run scoreboard players
 execute if score #ride {ns}.data matches 1 if score #mode {ns}.data matches 0 run scoreboard players set #mode {ns}.data 1
 execute if score #mode {ns}.data matches 2 run scoreboard players set #ride {ns}.data 0
 
+## A spectating player has no body, so a mannequin can stand in for it
+scoreboard players set #double {ns}.data 0
+execute if data storage {ns}:work args{{body:"mannequin"}} unless score #mode {ns}.data matches 2 unless score #ride {ns}.data matches 1 run scoreboard players set #double {ns}.data 1
+execute if score #double {ns}.data matches 1 run function {ns}:v{version}/travel/double/choose
+
 ## Timing, clamped so a zero can never divide anything later on and an absurd value can never be looped over
 execute store result score #duration {ns}.data run data get storage {ns}:work args.duration
 execute store result score #smoothing {ns}.data run data get storage {ns}:work args.smoothing
@@ -288,6 +293,8 @@ data modify entity @s item.components."minecraft:custom_data".particle set from 
 
 execute unless entity @s[tag={ns}.keep_gamemode] run function {ns}:v{version}/travel/remember_gamemode
 scoreboard players operation @p[tag={ns}.temp] {ns}.id = @s {ns}.id
+execute if score #double {ns}.data matches 1 run tag @s add {ns}.double
+execute if score #double {ns}.data matches 1 as @p[tag={ns}.temp] at @s run function {ns}:v{version}/travel/double/spawn
 execute if score #protect {ns}.data matches 1 run function {ns}:v{version}/travel/protect
 execute if entity @s[tag={ns}.ride] run return run ride @p[tag={ns}.temp] mount @s
 

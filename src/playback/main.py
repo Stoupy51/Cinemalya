@@ -39,6 +39,7 @@ tag @a[tag={ns}.temp,limit=1] remove {ns}.temp
 execute if entity @s[tag={ns}.ride] run return run function {ns}:v{version}/playback/hold_rider
 tp @a[distance=0,tag={ns}.temp,limit=1] @s
 execute at @s run spectate @s @a[distance=0,tag={ns}.temp,limit=1]
+execute if entity @s[tag={ns}.double] run function {ns}:v{version}/playback/move_double
 function {ns}:v{version}/playback/advance
 """)
 
@@ -250,6 +251,7 @@ execute if entity @s[tag={ns}.was_creative] as @a[tag={ns}.temp,limit=1] run gam
 #
 
 scoreboard players remove #entities {ns}.data 1
+execute if entity @s[tag={ns}.double] run function {ns}:v{version}/playback/remove_double
 execute store result storage {ns}:work sel.i int 1 run scoreboard players get @s {ns}.id
 function {ns}:v{version}/playback/clear_path with storage {ns}:work sel
 kill @s

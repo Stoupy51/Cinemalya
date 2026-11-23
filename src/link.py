@@ -4,6 +4,7 @@ from stewbeet import set_json_encoder, write_load_file, write_tick_file
 from stouputils.typing import JsonDict
 
 from .api import main as api
+from .double import main as double
 from .editor.main import main as editor
 from .intro.main import main as intro
 from .playback.main import main as playback
@@ -57,5 +58,6 @@ execute if score #editors {ns}.data matches 1.. run function {ns}:v{version}/edi
 	travel()
 	playback()
 	intro()
+	double()
 	editor()
 

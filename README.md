@@ -170,6 +170,8 @@ The export shows two `launch_path` commands to copy into a command block: one wi
 | `particle`         | string | none        | Particle trailed behind the camera                        |
 | `gamemode`         | string | `"restore"` | `restore`, `keep` (already spectator), `none` (no player) |
 | `mode`             | string | `"spectator"` | `spectator`, or `ride` to sit on the camera in your own gamemode, see [ride](#ride) |
+| `body`             | string | none        | `mannequin`: a mannequin with your skin, armor and hands stands one block behind the camera, for everyone else to see. Looking straight down still shows its helmet and hands |
+| `pose`             | string | `"standing"` | With `body`: `standing`, `crouching`, `swimming` or `fall_flying` |
 | `protect`          | bool   | `false`     | Resistance for the whole travel, cleared at the end, so a rider takes no damage |
 | `tags`             | list   | `[]`        | Extra tags on the cinematic entity                        |
 | `precise_rotation` | bool   | `true`      | See [rotation precision](#precision)                      |
