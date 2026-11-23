@@ -1,1 +1,1 @@
-$$(rel)
+$execute $(rel)

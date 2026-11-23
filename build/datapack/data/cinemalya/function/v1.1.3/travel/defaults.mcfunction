@@ -16,7 +16,7 @@ execute unless data storage cinemalya:work args.duration run data modify storage
 execute unless data storage cinemalya:work args.smoothing run data modify storage cinemalya:work args.smoothing set value 1
 execute unless data storage cinemalya:work args.delay run data modify storage cinemalya:work args.delay set value 0
 execute unless data storage cinemalya:work args.arc_side run data modify storage cinemalya:work args.arc_side set value 0.0
-execute unless data storage cinemalya:work args.arc_height run data modify storage cinemalya:work args.arc_height set value 20.0
+execute unless data storage cinemalya:work args.arc_height run data modify storage cinemalya:work args.arc_height set value 0.0
 execute unless data storage cinemalya:work args.tags run data modify storage cinemalya:work args.tags set value []
 
 ## Easing curve asked for by the whole path, spread across its segments later on
@@ -43,6 +43,11 @@ execute if data storage cinemalya:work args{gamemode:"none"} run scoreboard play
 # Riding keeps the player's own gamemode, and a camera with no player has nobody to ride it
 execute if score #ride cinemalya.data matches 1 if score #mode cinemalya.data matches 0 run scoreboard players set #mode cinemalya.data 1
 execute if score #mode cinemalya.data matches 2 run scoreboard players set #ride cinemalya.data 0
+
+## A spectating player has no body, so a mannequin can stand in for it
+scoreboard players set #double cinemalya.data 0
+execute if data storage cinemalya:work args{body:"mannequin"} unless score #mode cinemalya.data matches 2 unless score #ride cinemalya.data matches 1 run scoreboard players set #double cinemalya.data 1
+execute if score #double cinemalya.data matches 1 run function cinemalya:v1.1.3/travel/double/choose
 
 ## Timing, clamped so a zero can never divide anything later on and an absurd value can never be looped over
 execute store result score #duration cinemalya.data run data get storage cinemalya:work args.duration

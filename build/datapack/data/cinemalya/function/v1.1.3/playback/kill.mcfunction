@@ -11,6 +11,7 @@
 #
 
 scoreboard players remove #entities cinemalya.data 1
+execute if entity @s[tag=cinemalya.double] run function cinemalya:v1.1.3/playback/remove_double
 execute store result storage cinemalya:work sel.i int 1 run scoreboard players get @s cinemalya.id
 function cinemalya:v1.1.3/playback/clear_path with storage cinemalya:work sel
 kill @s

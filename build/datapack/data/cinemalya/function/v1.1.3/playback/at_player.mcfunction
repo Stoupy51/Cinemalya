@@ -12,5 +12,6 @@
 execute if entity @s[tag=cinemalya.ride] run return run function cinemalya:v1.1.3/playback/hold_rider
 tp @a[distance=0,tag=cinemalya.temp,limit=1] @s
 execute at @s run spectate @s @a[distance=0,tag=cinemalya.temp,limit=1]
+execute if entity @s[tag=cinemalya.double] run function cinemalya:v1.1.3/playback/move_double
 function cinemalya:v1.1.3/playback/advance
 

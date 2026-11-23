@@ -25,6 +25,10 @@ dummy @s drop
 await data storage cinemalya:editor export.rel
 await items entity @s weapon.mainhand *[custom_data~{cinemalya:{editor:true}}]
 
+# The export addresses `@a`, and the loader is a second player: two launches in one tick overrun the command chain and only the first camera appears
+data modify storage cinemalya:editor export.abs set string storage cinemalya:editor export.abs 18
+data modify storage cinemalya:editor export.rel set string storage cinemalya:editor export.rel 14
+
 # Both commands land the camera on the last keyframe, which sets the player down 1.6 blocks under it
 tp @s 1.5 200 1.5
 function cinemalya_test:run_absolute with storage cinemalya:editor export

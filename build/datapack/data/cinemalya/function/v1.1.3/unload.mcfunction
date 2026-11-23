@@ -38,6 +38,7 @@ data remove storage cinemalya:work ahead
 data remove storage cinemalya:work args
 data remove storage cinemalya:work bounds
 data remove storage cinemalya:work control
+data remove storage cinemalya:work double
 data remove storage cinemalya:work forward
 data remove storage cinemalya:work frames
 data remove storage cinemalya:work intro

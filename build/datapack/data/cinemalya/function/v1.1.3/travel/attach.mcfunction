@@ -10,6 +10,8 @@
 
 execute unless entity @s[tag=cinemalya.keep_gamemode] run function cinemalya:v1.1.3/travel/remember_gamemode
 scoreboard players operation @p[tag=cinemalya.temp] cinemalya.id = @s cinemalya.id
+execute if score #double cinemalya.data matches 1 run tag @s add cinemalya.double
+execute if score #double cinemalya.data matches 1 as @p[tag=cinemalya.temp] at @s run function cinemalya:v1.1.3/travel/double/spawn
 execute if score #protect cinemalya.data matches 1 run function cinemalya:v1.1.3/travel/protect
 execute if entity @s[tag=cinemalya.ride] run return run ride @p[tag=cinemalya.temp] mount @s
 

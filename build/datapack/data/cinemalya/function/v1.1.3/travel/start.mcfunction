@@ -13,7 +13,7 @@
 
 # The waypoint count drives three separate loops, so an oversized path is refused rather than truncated
 execute store result score #count cinemalya.data run data get storage cinemalya:work args.waypoints
-execute if score #count cinemalya.data matches 129.. run return fail
+execute if score #count cinemalya.data matches 129.. run return run tellraw @s[type=player] {text:"Cinemalya: a path takes at most 128 waypoints",color:"red"}
 
 # One cinematic per player: a second launch replaces the first instead of fighting over the camera
 execute unless score #mode cinemalya.data matches 2 run function cinemalya:v1.1.3/playback/stop_silent
@@ -21,7 +21,7 @@ execute unless score #mode cinemalya.data matches 2 run function cinemalya:v1.1.
 ## Build the path, cut where a waypoint is reached by teleport
 scoreboard players set #pieces cinemalya.data 1
 execute if data storage cinemalya:work args.waypoints[{tp:true}] run function cinemalya:v1.1.3/travel/pieces/count
-execute if score #pieces cinemalya.data matches 9.. run return fail
+execute if score #pieces cinemalya.data matches 9.. run return run tellraw @s[type=player] {text:"Cinemalya: a path takes at most 8 pieces, which is 7 teleports",color:"red"}
 function cinemalya:v1.1.3/travel/waypoints/normalize
 scoreboard players set #launch_budget cinemalya.data 60000
 scoreboard players set #frame_offset cinemalya.data 0
