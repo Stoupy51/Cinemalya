@@ -141,7 +141,7 @@ function {ns}:v{version}/editor/toggle_teleport
 
 execute if score #keyframes {ns}.data matches ..1 run return run title @s actionbar {{text:"A teleport needs a keyframe to leave from",color:"red"}}
 execute store result storage {ns}:editor label.n int 1 run scoreboard players get #keyframes {ns}.data
-execute store success score #was_teleport {ns}.data if data storage {ns}:editor keyframes[-1]{{tp:true}}
+execute store success score #was_teleport {ns}.data if data storage {ns}:editor keyframes[-1].tp
 execute if score #was_teleport {ns}.data matches 1 run return run function {ns}:v{version}/editor/unmark_teleport
 data modify storage {ns}:editor keyframes[-1].tp set value true
 data remove storage {ns}:editor trail[-1]
@@ -276,7 +276,7 @@ execute unless items entity @s weapon.mainhand *[custom_data~{{{ns}:{{editor:tru
 execute if score #keyframes {ns}.data matches ..0 run return run title @s actionbar {{text:"No keyframe to remove",color:"red"}}
 execute as @e[type=text_display,tag={ns}.keyframe] if score @s {ns}.data = #keyframes {ns}.data run kill @s
 data remove storage {ns}:editor keyframes[-1]
-execute if score #keyframes {ns}.data matches 2.. unless data storage {ns}:editor keyframes[-1]{{tp:true}} run data remove storage {ns}:editor trail[-1]
+execute if score #keyframes {ns}.data matches 2.. unless data storage {ns}:editor keyframes[-1].tp run data remove storage {ns}:editor trail[-1]
 scoreboard players remove #keyframes {ns}.data 1
 title @s actionbar [{{text:"Keyframe removed, ",color:"gold"}},{{score:{{name:"#keyframes",objective:"{ns}.data"}},color:"yellow"}},{{text:" left",color:"gold"}}]
 playsound minecraft:ui.button.click master @s ~ ~ ~ 0.5 0.8

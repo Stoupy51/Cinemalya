@@ -9,7 +9,7 @@
 #
 
 execute if score #keyframes cinemalya.data matches ..1 run return run title @s actionbar {text:"Place at least two keyframes to export",color:"red"}
-data modify storage cinemalya:editor export set value {abs:"",rel:"",sep:""}
+data modify storage cinemalya:editor export set value {abs:"",rel:"",sep:"",tp:""}
 data modify storage cinemalya:editor iter set from storage cinemalya:editor keyframes
 execute store result score #x0 cinemalya.data run data get storage cinemalya:editor keyframes[0].pos[0] 100
 execute store result score #y0 cinemalya.data run data get storage cinemalya:editor keyframes[0].pos[1] 100

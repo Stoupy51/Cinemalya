@@ -274,6 +274,7 @@ $execute if data storage {ns}:work args.waypoints[$(i)].args run function {ns}:v
 $execute if data storage {ns}:work args.waypoints[$(i)].at run function {ns}:v{version}/travel/waypoints/resolve_at with storage {ns}:work sel
 $execute unless data storage {ns}:work args.waypoints[$(i)].rot run data modify storage {ns}:work args.waypoints[$(i)].rot set from storage {ns}:work last_rot
 $execute if data storage {ns}:work args.waypoints[$(i)].duration run function {ns}:v{version}/travel/waypoints/clamp_duration with storage {ns}:work sel
+execute if score #ride {ns}.data matches 1 run function {ns}:v{version}/travel/waypoints/seat with storage {ns}:work sel
 
 ## Keep the yaw within half a turn of the previous one (a 350 degree spin becomes a 10 degree one)
 $execute store result score #yaw {ns}.data run data get storage {ns}:work args.waypoints[$(i)].rot[0] 1000
@@ -284,6 +285,20 @@ execute if score #diff {ns}.data matches ..-180000 run scoreboard players add #y
 $execute store result storage {ns}:work args.waypoints[$(i)].rot[0] float 0.001 run scoreboard players get #yaw {ns}.data
 scoreboard players operation #last_yaw {ns}.data = #yaw {ns}.data
 $data modify storage {ns}:work last_rot set from storage {ns}:work args.waypoints[$(i)].rot
+""")
+
+	write_versioned_function("travel/waypoints/seat", f"""
+#> seat
+#
+# @input macro		i : int - index of the waypoint to lower
+#
+# @description		A rider's eyes sit 1.02 blocks over the camera, so every waypoint goes down by that much
+#					and the view stays where the waypoint was placed.
+#
+
+$execute store result score #n {ns}.data run data get storage {ns}:work args.waypoints[$(i)].pos[1] 1000
+scoreboard players remove #n {ns}.data 1020
+$execute store result storage {ns}:work args.waypoints[$(i)].pos[1] double 0.001 run scoreboard players get #n {ns}.data
 """)
 
 	write_versioned_function("travel/waypoints/clamp_duration", f"""

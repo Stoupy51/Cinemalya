@@ -14,6 +14,7 @@ $execute if data storage cinemalya:work args.waypoints[$(i)].args run function c
 $execute if data storage cinemalya:work args.waypoints[$(i)].at run function cinemalya:v1.1.3/travel/waypoints/resolve_at with storage cinemalya:work sel
 $execute unless data storage cinemalya:work args.waypoints[$(i)].rot run data modify storage cinemalya:work args.waypoints[$(i)].rot set from storage cinemalya:work last_rot
 $execute if data storage cinemalya:work args.waypoints[$(i)].duration run function cinemalya:v1.1.3/travel/waypoints/clamp_duration with storage cinemalya:work sel
+execute if score #ride cinemalya.data matches 1 run function cinemalya:v1.1.3/travel/waypoints/seat with storage cinemalya:work sel
 
 ## Keep the yaw within half a turn of the previous one (a 350 degree spin becomes a 10 degree one)
 $execute store result score #yaw cinemalya.data run data get storage cinemalya:work args.waypoints[$(i)].rot[0] 1000

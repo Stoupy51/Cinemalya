@@ -7,6 +7,7 @@
 # @description		Move on to the segment #time falls in, skipping any too short to hold a frame.
 #
 
+execute if score #seg cinemalya.data matches 0.. run function cinemalya:v1.1.3/travel/frames/land_event
 scoreboard players add #seg cinemalya.data 1
 execute if score #seg cinemalya.data >= #segments cinemalya.data run return 0
 scoreboard players operation #seg_start cinemalya.data = #seg_end cinemalya.data

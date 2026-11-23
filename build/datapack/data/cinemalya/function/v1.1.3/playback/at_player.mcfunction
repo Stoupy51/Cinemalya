@@ -9,6 +9,7 @@
 # 				survives a death, a dimension change, or the player pressing a movement key.
 #
 
+execute if entity @s[tag=cinemalya.ride] run return run function cinemalya:v1.1.3/playback/hold_rider
 tp @a[distance=0,tag=cinemalya.temp,limit=1] @s
 execute at @s run spectate @s @a[distance=0,tag=cinemalya.temp,limit=1]
 function cinemalya:v1.1.3/playback/advance

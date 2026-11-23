@@ -15,6 +15,9 @@ scoreboard objectives add cinemalya.delay dummy
 scoreboard objectives add cinemalya.frame dummy
 scoreboard objectives add cinemalya.smoothing dummy
 scoreboard objectives add cinemalya.ground dummy
+scoreboard objectives add cinemalya.popped dummy
+scoreboard objectives add cinemalya.cut dummy
+scoreboard objectives add cinemalya.event dummy
 scoreboard objectives add cinemalya.click minecraft.used:minecraft.carrot_on_a_stick
 scoreboard objectives add cinemalya.drop minecraft.dropped:minecraft.carrot_on_a_stick
 
@@ -26,6 +29,7 @@ execute unless score #next_id cinemalya.id matches 0.. run scoreboard players se
 scoreboard players set #-2 cinemalya.data -2
 scoreboard players set #-1 cinemalya.data -1
 scoreboard players set #2 cinemalya.data 2
+scoreboard players set #20 cinemalya.data 20
 scoreboard players set #48 cinemalya.data 48
 scoreboard players set #100 cinemalya.data 100
 scoreboard players set #165 cinemalya.data 165

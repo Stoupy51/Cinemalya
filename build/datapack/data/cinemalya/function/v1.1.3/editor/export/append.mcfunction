@@ -27,6 +27,7 @@
 #			pitch_i (unknown)
 #			pitch_p (unknown)
 #			pitch_f (unknown)
+#			tp (unknown)
 #			rel (unknown)
 #			dx_s (unknown)
 #			dx_i (unknown)
@@ -42,6 +43,6 @@
 #			dz_f (unknown)
 #
 
-$data modify storage cinemalya:editor export.abs set value '$(abs)$(sep){args:[$(x_s)$(x_i).$(x_p)$(x_f),$(y_s)$(y_i).$(y_p)$(y_f),$(z_s)$(z_i).$(z_p)$(z_f),$(yaw_s)$(yaw_i).$(yaw_p)$(yaw_f),$(pitch_s)$(pitch_i).$(pitch_p)$(pitch_f)]}'
-$data modify storage cinemalya:editor export.rel set value '$(rel)$(sep){at:"~$(dx_s)$(dx_i).$(dx_p)$(dx_f) ~$(dy_s)$(dy_i).$(dy_p)$(dy_f) ~$(dz_s)$(dz_i).$(dz_p)$(dz_f)",rot:[$(yaw_s)$(yaw_i).$(yaw_p)$(yaw_f),$(pitch_s)$(pitch_i).$(pitch_p)$(pitch_f)]}'
+$data modify storage cinemalya:editor export.abs set value '$(abs)$(sep){args:[$(x_s)$(x_i).$(x_p)$(x_f),$(y_s)$(y_i).$(y_p)$(y_f),$(z_s)$(z_i).$(z_p)$(z_f),$(yaw_s)$(yaw_i).$(yaw_p)$(yaw_f),$(pitch_s)$(pitch_i).$(pitch_p)$(pitch_f)]$(tp)}'
+$data modify storage cinemalya:editor export.rel set value '$(rel)$(sep){at:"~$(dx_s)$(dx_i).$(dx_p)$(dx_f) ~$(dy_s)$(dy_i).$(dy_p)$(dy_f) ~$(dz_s)$(dz_i).$(dz_p)$(dz_f)",rot:[$(yaw_s)$(yaw_i).$(yaw_p)$(yaw_f),$(pitch_s)$(pitch_i).$(pitch_p)$(pitch_f)]$(tp)}'
 

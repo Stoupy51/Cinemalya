@@ -91,6 +91,8 @@ execute store result storage cinemalya:editor export.pitch_f int 1 run scoreboar
 data modify storage cinemalya:editor export.pitch_p set value ""
 execute if score #pitch cinemalya.data matches ..9 run data modify storage cinemalya:editor export.pitch_p set value "0"
 
+data modify storage cinemalya:editor export.tp set value ""
+execute if data storage cinemalya:editor iter[0].tp run data modify storage cinemalya:editor export.tp set value ",tp:true"
 function cinemalya:v1.1.3/editor/export/append with storage cinemalya:editor export
 data modify storage cinemalya:editor export.sep set value ","
 data remove storage cinemalya:editor iter[0]

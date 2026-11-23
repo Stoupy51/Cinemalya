@@ -1,11 +1,12 @@
 
 #> cinemalya:v1.1.3/travel/frames/main
 #
-# @within	cinemalya:v1.1.3/travel/start
+# @within	cinemalya:v1.1.3/travel/pieces/build
+#			cinemalya:v1.1.3/travel/start
 #
 # @input storage	cinemalya:work samples, cinemalya:work rot_samples, cinemalya:work lengths, cinemalya:work bounds
-# @input score		#shared_length, #shared_count cinemalya.data
-# @output storage	cinemalya:work frames : one entry per playback step
+# @input score		#shared_length, #shared_count, #frame_offset, #first_at, #wp_offset cinemalya.data
+# @output storage	cinemalya:work frames : one entry per playback step, and the `events` the waypoints fire
 # 
 # @description		Walk the travel one frame at a time. Each frame works out how far along the path it
 # 				should be, then lands between the two samples around that distance. Time is counted
@@ -13,7 +14,11 @@
 # 				means playback never computes anything: it just pops.
 #
 
-data modify storage cinemalya:work frames set value {points:[],rotations:[]}
+data modify storage cinemalya:work frames set value {points:[],rotations:[],events:[]}
+scoreboard players operation #event_at cinemalya.data = #first_at cinemalya.data
+scoreboard players operation #event_wp cinemalya.data = #wp_offset cinemalya.data
+data modify storage cinemalya:work sel.i set value 0
+function cinemalya:v1.1.3/travel/frames/event with storage cinemalya:work sel
 scoreboard players operation #last_seg cinemalya.data = #segments cinemalya.data
 scoreboard players remove #last_seg cinemalya.data 1
 

@@ -1,7 +1,8 @@
 
 #> cinemalya:v1.1.3/travel/control/main
 #
-# @within	cinemalya:v1.1.3/travel/start
+# @within	cinemalya:v1.1.3/travel/pieces/build
+#			cinemalya:v1.1.3/travel/start
 #
 # @output storage	cinemalya:work control, cinemalya:work rot_control
 # 

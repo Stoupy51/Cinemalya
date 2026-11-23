@@ -18,11 +18,20 @@ execute if score #count cinemalya.data matches 129.. run return fail
 # One cinematic per player: a second launch replaces the first instead of fighting over the camera
 execute unless score #mode cinemalya.data matches 2 run function cinemalya:v1.1.3/playback/stop_silent
 
-## Build the path
+## Build the path, cut where a waypoint is reached by teleport
+scoreboard players set #pieces cinemalya.data 1
+execute if data storage cinemalya:work args.waypoints[{tp:true}] run function cinemalya:v1.1.3/travel/pieces/count
+execute if score #pieces cinemalya.data matches 9.. run return fail
 function cinemalya:v1.1.3/travel/waypoints/normalize
-function cinemalya:v1.1.3/travel/control/main
-function cinemalya:v1.1.3/travel/sample/main
-function cinemalya:v1.1.3/travel/frames/main
+scoreboard players set #launch_budget cinemalya.data 60000
+scoreboard players set #frame_offset cinemalya.data 0
+scoreboard players set #first_at cinemalya.data 1
+scoreboard players set #hold_total cinemalya.data 0
+scoreboard players set #wp_offset cinemalya.data 0
+execute if score #pieces cinemalya.data matches 2.. run function cinemalya:v1.1.3/travel/pieces/main
+execute if score #pieces cinemalya.data matches 1 run function cinemalya:v1.1.3/travel/control/main
+execute if score #pieces cinemalya.data matches 1 run function cinemalya:v1.1.3/travel/sample/main
+execute if score #pieces cinemalya.data matches 1 run function cinemalya:v1.1.3/travel/frames/main
 
 ## Hand over to the entity, tagging the player so the summoned entity can find them
 execute unless score #mode cinemalya.data matches 2 run function #cinemalya:v1/signals/on_launch

@@ -119,7 +119,7 @@ scoreboard players operation #dz {ns}.data = #z {ns}.data
 scoreboard players operation #dz {ns}.data -= #z0 {ns}.data
 {"".join(format_number(ns, key) for key in NUMBERS)}
 data modify storage {ns}:editor export.tp set value ""
-execute if data storage {ns}:editor iter[0]{{tp:true}} run data modify storage {ns}:editor export.tp set value ",tp:true"
+execute if data storage {ns}:editor iter[0].tp run data modify storage {ns}:editor export.tp set value ",tp:true"
 function {ns}:v{version}/editor/export/append with storage {ns}:editor export
 data modify storage {ns}:editor export.sep set value ","
 data remove storage {ns}:editor iter[0]

@@ -3,7 +3,8 @@
 #
 # @executed	at @s
 #
-# @within	cinemalya:v1.1.3/editor/place
+# @within	cinemalya:v1.1.3/editor/unmark_teleport
+#			cinemalya:v1.1.3/editor/place
 #
 # @description		Store the segment ending on the newest keyframe, so drawing never has to pair keyframes up.
 #

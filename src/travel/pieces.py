@@ -21,7 +21,7 @@ function {ns}:v{version}/travel/pieces/count_next
 
 	write_versioned_function("travel/pieces/count_next", f"""
 execute unless data storage {ns}:work scan[0] run return 0
-execute if data storage {ns}:work scan[0]{{tp:true}} run scoreboard players add #pieces {ns}.data 1
+execute if data storage {ns}:work scan[0].tp run scoreboard players add #pieces {ns}.data 1
 data remove storage {ns}:work scan[0]
 function {ns}:v{version}/travel/pieces/count_next
 """)
@@ -42,6 +42,7 @@ data modify storage {ns}:work rest set from storage {ns}:work args.waypoints
 data modify storage {ns}:work acc set value {{points:[],rotations:[],events:[],cuts:[]}}
 
 scoreboard players set #wp_offset {ns}.data 0
+scoreboard players set #hold_total {ns}.data 0
 scoreboard players operation #total_duration {ns}.data = #duration {ns}.data
 scoreboard players operation #total_segments {ns}.data = #count {ns}.data
 scoreboard players operation #total_segments {ns}.data -= #pieces {ns}.data
@@ -83,7 +84,7 @@ execute if data storage {ns}:work rest[0] run function {ns}:v{version}/travel/pi
 	write_versioned_function("travel/pieces/take", f"""
 data modify storage {ns}:work args.waypoints append from storage {ns}:work rest[0]
 data remove storage {ns}:work rest[0]
-execute if data storage {ns}:work rest[0] unless data storage {ns}:work rest[0]{{tp:true}} run function {ns}:v{version}/travel/pieces/take
+execute if data storage {ns}:work rest[0] unless data storage {ns}:work rest[0].tp run function {ns}:v{version}/travel/pieces/take
 """)
 
 	write_versioned_function("travel/pieces/single", f"""
@@ -142,6 +143,8 @@ execute store result score #n {ns}.data run data get storage {ns}:work acc.point
 scoreboard players add #n {ns}.data 1
 execute store result storage {ns}:work acc.cuts[-1].at int 1 run scoreboard players get #n {ns}.data
 execute if data storage {ns}:work args.waypoints[0].delay store result storage {ns}:work acc.cuts[-1].delay int 1 run data get storage {ns}:work args.waypoints[0].delay
+execute store result score #hold {ns}.data run data get storage {ns}:work acc.cuts[-1].delay
+scoreboard players operation #hold_total {ns}.data += #hold {ns}.data
 data modify storage {ns}:work acc.points append from storage {ns}:work args.waypoints[0].pos
 data modify storage {ns}:work acc.rotations append from storage {ns}:work args.waypoints[0].rot
 """)

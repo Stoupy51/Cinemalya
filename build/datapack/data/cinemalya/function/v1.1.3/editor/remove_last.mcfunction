@@ -11,7 +11,7 @@ execute unless items entity @s weapon.mainhand *[custom_data~{cinemalya:{editor:
 execute if score #keyframes cinemalya.data matches ..0 run return run title @s actionbar {text:"No keyframe to remove",color:"red"}
 execute as @e[type=text_display,tag=cinemalya.keyframe] if score @s cinemalya.data = #keyframes cinemalya.data run kill @s
 data remove storage cinemalya:editor keyframes[-1]
-execute if score #keyframes cinemalya.data matches 2.. run data remove storage cinemalya:editor trail[-1]
+execute if score #keyframes cinemalya.data matches 2.. unless data storage cinemalya:editor keyframes[-1].tp run data remove storage cinemalya:editor trail[-1]
 scoreboard players remove #keyframes cinemalya.data 1
 title @s actionbar [{text:"Keyframe removed, ",color:"gold"},{score:{name:"#keyframes",objective:"cinemalya.data"},color:"yellow"},{text:" left",color:"gold"}]
 playsound minecraft:ui.button.click master @s ~ ~ ~ 0.5 0.8

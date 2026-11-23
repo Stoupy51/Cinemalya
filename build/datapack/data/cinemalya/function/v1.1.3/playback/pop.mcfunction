@@ -18,5 +18,6 @@ $data remove storage cinemalya:work paths.i$(i).points[0]
 $data modify entity @s Rotation set from storage cinemalya:work paths.i$(i).rotations[0]
 $data remove storage cinemalya:work paths.i$(i).rotations[0]
 execute if entity @s[tag=cinemalya.particle] run function cinemalya:v1.1.3/playback/particle
+function cinemalya:v1.1.3/playback/count_pop with storage cinemalya:work sel
 $execute unless data storage cinemalya:work paths.i$(i).points[0] run function cinemalya:v1.1.3/playback/finish
 

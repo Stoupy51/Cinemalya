@@ -32,6 +32,11 @@ data modify entity @s Rotation set from storage cinemalya:work args.waypoints[0]
 data modify entity @s item set value {id:"minecraft:stone",count:1,components:{"minecraft:item_model":"minecraft:air"}}
 execute if data storage cinemalya:work args.particle run function cinemalya:v1.1.3/travel/set_particle
 
+## Teleports and waypoint events in the path: arm the first of each
+scoreboard players set @s cinemalya.popped 0
+execute store result score @s cinemalya.cut run data get storage cinemalya:work frames.cuts[0].at
+execute store result score @s cinemalya.event run data get storage cinemalya:work frames.events[0].at
+
 ## Give this cinematic its own slot in the path storage
 execute store result storage cinemalya:work sel.i int 1 run scoreboard players get @s cinemalya.id
 function cinemalya:v1.1.3/travel/store_path with storage cinemalya:work sel
@@ -39,5 +44,6 @@ function cinemalya:v1.1.3/travel/store_path with storage cinemalya:work sel
 ## Attach the player, unless this is a free flying camera
 execute if score #mode cinemalya.data matches 2 run tag @s add cinemalya.detached
 execute if score #mode cinemalya.data matches 1 run tag @s add cinemalya.keep_gamemode
+execute if score #ride cinemalya.data matches 1 run tag @s add cinemalya.ride
 execute unless score #mode cinemalya.data matches 2 run function cinemalya:v1.1.3/travel/attach
 

@@ -5,6 +5,7 @@
 #
 # @within	cinemalya:v1.1.3/playback/tick
 #			cinemalya:v1.1.3/playback/at_player
+#			cinemalya:v1.1.3/playback/hold_rider
 #
 # @description		Burn a tick of the opening delay, or step onto the next frame once enough ticks
 # 				have passed for the client to have finished interpolating the previous one.

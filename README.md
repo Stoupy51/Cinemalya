@@ -169,6 +169,8 @@ The export shows two `launch_path` commands to copy into a command block: one wi
 | `arc_height`       | float  | `20.0`      | How far above the higher end the arc peaks                |
 | `particle`         | string | none        | Particle trailed behind the camera                        |
 | `gamemode`         | string | `"restore"` | `restore`, `keep` (already spectator), `none` (no player) |
+| `mode`             | string | `"spectator"` | `spectator`, or `ride` to sit on the camera in your own gamemode, see [ride](#ride) |
+| `protect`          | bool   | `false`     | Resistance for the whole travel, cleared at the end, so a rider takes no damage |
 | `tags`             | list   | `[]`        | Extra tags on the cinematic entity                        |
 | `precise_rotation` | bool   | `true`      | See [rotation precision](#precision)                      |
 | `yaw` / `pitch`    | float  | target's    | Override the ending rotation                              |
@@ -209,6 +211,9 @@ Add your own function to these tags. They run **as and at the player**, or as th
 # 🔍 Notes
 
 **Reading the state.** `#entities cinemalya.data` counts the cinematics playing right now, so you can gate on it (`execute if score #entities cinemalya.data matches 1.. run return 1`). Camera entities carry the `cinemalya.cinematic` tag plus whatever you passed in `tags`.
+
+<a id="ride"></a>
+**Riding.** `mode:"ride"` keeps the player in their own gamemode and sits them on the camera, so they keep their hands, HUD and body, and the camera is where their eyes are. Their head stays free: nothing can turn it for them smoothly, since a forced rotation only moves in steps of one tick. Use the default spectator mode for a sweeping pan. Sneaking cannot get a rider off, the camera puts them back, but the game still prints its dismount hint. Pair it with `protect:true` so nothing hurts them on the way. That clears the player's own resistance effect when the travel ends.
 
 <a id="precision"></a>
 **Rotation precision.** Minecraft quantises rotations to steps of `360/256` = `1.40625°`, which makes a `/spectate` camera turn in visible notches ([MC-184359](https://bugs.mojang.com/browse/MC-184359)). Flipping the camera's `OnGround` flag each tick makes the server send full precision instead. On by default, one command per cinematic per tick, no side effect since display entities are not living entities. It relies on [MC-278440](https://bugs.mojang.com/browse/MC-278440), a community find, so a future version could close it: pass `precise_rotation:false` to opt out.

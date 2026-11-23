@@ -120,10 +120,20 @@ execute if data storage {ns}:work args{{ease:"ease_in_out"}} run scoreboard play
 scoreboard players set #precise {ns}.data 1
 execute if data storage {ns}:work args{{precise_rotation:false}} run scoreboard players set #precise {ns}.data 0
 
+## Where the player rides: spectating the camera (default), or sitting on it with their own body and a free head
+scoreboard players set #ride {ns}.data 0
+execute if data storage {ns}:work args{{mode:"ride"}} run scoreboard players set #ride {ns}.data 1
+scoreboard players set #protect {ns}.data 0
+execute if data storage {ns}:work args{{protect:true}} run scoreboard players set #protect {ns}.data 1
+
 ## What to do with the player's gamemode (0 = remember and restore, 1 = leave alone, 2 = no player at all)
 scoreboard players set #mode {ns}.data 0
 execute if data storage {ns}:work args{{gamemode:"keep"}} run scoreboard players set #mode {ns}.data 1
 execute if data storage {ns}:work args{{gamemode:"none"}} run scoreboard players set #mode {ns}.data 2
+
+# Riding keeps the player's own gamemode, and a camera with no player has nobody to ride it
+execute if score #ride {ns}.data matches 1 if score #mode {ns}.data matches 0 run scoreboard players set #mode {ns}.data 1
+execute if score #mode {ns}.data matches 2 run scoreboard players set #ride {ns}.data 0
 
 ## Timing, clamped so a zero can never divide anything later on and an absurd value can never be looped over
 execute store result score #duration {ns}.data run data get storage {ns}:work args.duration
@@ -179,6 +189,7 @@ function {ns}:v{version}/travel/waypoints/normalize
 scoreboard players set #launch_budget {ns}.data {LAUNCH_BUDGET}
 scoreboard players set #frame_offset {ns}.data 0
 scoreboard players set #first_at {ns}.data 1
+scoreboard players set #hold_total {ns}.data 0
 scoreboard players set #wp_offset {ns}.data 0
 execute if score #pieces {ns}.data matches 2.. run function {ns}:v{version}/travel/pieces/main
 execute if score #pieces {ns}.data matches 1 run function {ns}:v{version}/travel/control/main
@@ -236,6 +247,7 @@ function {ns}:v{version}/travel/store_path with storage {ns}:work sel
 ## Attach the player, unless this is a free flying camera
 execute if score #mode {ns}.data matches 2 run tag @s add {ns}.detached
 execute if score #mode {ns}.data matches 1 run tag @s add {ns}.keep_gamemode
+execute if score #ride {ns}.data matches 1 run tag @s add {ns}.ride
 execute unless score #mode {ns}.data matches 2 run function {ns}:v{version}/travel/attach
 """)
 
@@ -276,10 +288,35 @@ data modify entity @s item.components."minecraft:custom_data".particle set from 
 
 execute unless entity @s[tag={ns}.keep_gamemode] run function {ns}:v{version}/travel/remember_gamemode
 scoreboard players operation @p[tag={ns}.temp] {ns}.id = @s {ns}.id
+execute if score #protect {ns}.data matches 1 run function {ns}:v{version}/travel/protect
+execute if entity @s[tag={ns}.ride] run return run ride @p[tag={ns}.temp] mount @s
 
 # As the player: a gamemode set by anyone else is announced in their chat
 execute as @p[tag={ns}.temp] run gamemode spectator @s
 spectate @s @p[tag={ns}.temp]
+""")
+
+	write_versioned_function("travel/protect", f"""
+#> protect
+#
+# @executed			as the cinematic entity
+#
+# @description		Make the rider immune to damage for as long as the cinematic can last, plus a margin.
+#					The effect is cleared when it ends, which also clears a resistance the player already had.
+#
+
+tag @s add {ns}.protect
+execute store result score #protect_ticks {ns}.data run data get storage {ns}:work frames.points
+scoreboard players operation #protect_ticks {ns}.data *= #smoothing {ns}.data
+scoreboard players operation #protect_ticks {ns}.data += #hold_total {ns}.data
+scoreboard players operation #protect_ticks {ns}.data /= #20 {ns}.data
+scoreboard players add #protect_ticks {ns}.data 3
+execute store result storage {ns}:work sel.seconds int 1 run scoreboard players get #protect_ticks {ns}.data
+function {ns}:v{version}/travel/protect_rider with storage {ns}:work sel
+""")
+
+	write_versioned_function("travel/protect_rider", f"""
+$effect give @p[tag={ns}.temp] minecraft:resistance $(seconds) 255 true
 """)
 
 	write_versioned_function("travel/remember_gamemode", f"""

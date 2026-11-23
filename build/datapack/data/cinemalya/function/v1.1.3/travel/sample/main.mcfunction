@@ -1,7 +1,8 @@
 
 #> cinemalya:v1.1.3/travel/sample/main
 #
-# @within	cinemalya:v1.1.3/travel/start
+# @within	cinemalya:v1.1.3/travel/pieces/build
+#			cinemalya:v1.1.3/travel/start
 #
 # @output storage	cinemalya:work samples, cinemalya:work rot_samples
 # @output score		#last cinemalya.data
@@ -13,7 +14,7 @@
 ## One sample per frame, or fewer when the frames and waypoints leave less of the launch budget
 scoreboard players operation #frames cinemalya.data = #duration cinemalya.data
 scoreboard players operation #frames cinemalya.data /= #smoothing cinemalya.data
-scoreboard players set #samples cinemalya.data 60000
+scoreboard players operation #samples cinemalya.data = #launch_budget cinemalya.data
 scoreboard players operation #n cinemalya.data = #frames cinemalya.data
 scoreboard players operation #n cinemalya.data *= #48 cinemalya.data
 scoreboard players operation #samples cinemalya.data -= #n cinemalya.data

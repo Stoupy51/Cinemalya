@@ -36,8 +36,23 @@ tag @a[tag={ns}.temp,limit=1] remove {ns}.temp
 #					survives a death, a dimension change, or the player pressing a movement key.
 #
 
+execute if entity @s[tag={ns}.ride] run return run function {ns}:v{version}/playback/hold_rider
 tp @a[distance=0,tag={ns}.temp,limit=1] @s
 execute at @s run spectate @s @a[distance=0,tag={ns}.temp,limit=1]
+function {ns}:v{version}/playback/advance
+""")
+
+	write_versioned_function("playback/hold_rider", f"""
+#> hold_rider
+#
+# @executed			as & at the cinematic entity, with the rider tagged {ns}.temp
+#
+# @description		A rider the camera carries needs no teleport. Sneaking dismounts it, so it is put back on every tick it is not aboard.
+#
+
+scoreboard players set #aboard {ns}.data 0
+execute on passengers run scoreboard players set #aboard {ns}.data 1
+execute if score #aboard {ns}.data matches 0 run ride @a[tag={ns}.temp,limit=1] mount @s
 function {ns}:v{version}/playback/advance
 """)
 
@@ -202,7 +217,10 @@ function {ns}:v{version}/playback/kill
 #					give them their gamemode back, then let other datapacks react.
 #
 
-execute at @s run tp @a[tag={ns}.temp,limit=1] ~ ~-1.6 ~ ~ ~
+execute if entity @s[tag={ns}.protect] run effect clear @a[tag={ns}.temp,limit=1] minecraft:resistance
+execute if entity @s[tag={ns}.ride] run ride @a[tag={ns}.temp,limit=1] dismount
+execute if entity @s[tag={ns}.ride] at @s run tp @a[tag={ns}.temp,limit=1] ~ ~-0.6 ~ ~ ~
+execute unless entity @s[tag={ns}.ride] at @s run tp @a[tag={ns}.temp,limit=1] ~ ~-1.6 ~ ~ ~
 function {ns}:v{version}/playback/restore_gamemode
 execute as @a[tag={ns}.temp,limit=1] at @s run function #{ns}:v1/signals/on_finish
 """)
@@ -291,6 +309,7 @@ tag @s remove {ns}.temp
 """)
 
 	write_versioned_function("playback/stop_one", f"""
+execute if entity @s[tag={ns}.protect] run effect clear @a[tag={ns}.temp,limit=1] minecraft:resistance
 execute if score #restore {ns}.data matches 1 run function {ns}:v{version}/playback/restore_gamemode
 execute if score #restore {ns}.data matches 0 run function {ns}:v{version}/playback/carry_gamemode
 function {ns}:v{version}/playback/kill
