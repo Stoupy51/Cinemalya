@@ -181,7 +181,7 @@ def write_start(ns: str, version: str) -> None:
 
 # The waypoint count drives three separate loops, so an oversized path is refused rather than truncated
 execute store result score #count {ns}.data run data get storage {ns}:work args.waypoints
-execute if score #count {ns}.data matches {MAX_WAYPOINTS + 1}.. run return fail
+execute if score #count {ns}.data matches {MAX_WAYPOINTS + 1}.. run return run tellraw @s[type=player] {{text:"Cinemalya: a path takes at most {MAX_WAYPOINTS} waypoints",color:"red"}}
 
 # One cinematic per player: a second launch replaces the first instead of fighting over the camera
 execute unless score #mode {ns}.data matches 2 run function {ns}:v{version}/playback/stop_silent
@@ -189,7 +189,7 @@ execute unless score #mode {ns}.data matches 2 run function {ns}:v{version}/play
 ## Build the path, cut where a waypoint is reached by teleport
 scoreboard players set #pieces {ns}.data 1
 execute if data storage {ns}:work args.waypoints[{{tp:true}}] run function {ns}:v{version}/travel/pieces/count
-execute if score #pieces {ns}.data matches {MAX_PIECES + 1}.. run return fail
+execute if score #pieces {ns}.data matches {MAX_PIECES + 1}.. run return run tellraw @s[type=player] {{text:"Cinemalya: a path takes at most {MAX_PIECES} pieces, which is {MAX_PIECES - 1} teleports",color:"red"}}
 function {ns}:v{version}/travel/waypoints/normalize
 scoreboard players set #launch_budget {ns}.data {LAUNCH_BUDGET}
 scoreboard players set #frame_offset {ns}.data 0

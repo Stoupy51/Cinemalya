@@ -190,8 +190,8 @@ Every argument that ends up bounding a loop is clamped at launch, so a typo cost
 |-------------------------|------------------|-------------------------------------------------------|
 | `duration`, `.duration` | `36000` (30 min) | Clamped, per travel and per waypoint                  |
 | `smoothing`             | `1` to `100`     | Clamped                                               |
-| `waypoints`             | `128`            | The launch is refused and returns `fail`              |
-| Pieces (teleports + 1)  | `8`              | The launch is refused and returns `fail`              |
+| `waypoints`             | `128`            | Refused, with a red message to the player and `fail`  |
+| Pieces (teleports + 1)  | `8`              | Refused, with a red message to the player and `fail`  |
 | `tags`                  | `32`             | The extras are dropped                                |
 | Frames emitted          | `600`            | The smoothing rises so the path keeps its full length |
 
