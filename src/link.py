@@ -35,6 +35,9 @@ scoreboard objectives add {ns}.delay dummy
 scoreboard objectives add {ns}.frame dummy
 scoreboard objectives add {ns}.smoothing dummy
 scoreboard objectives add {ns}.ground dummy
+scoreboard objectives add {ns}.popped dummy
+scoreboard objectives add {ns}.cut dummy
+scoreboard objectives add {ns}.event dummy
 scoreboard objectives add {ns}.click minecraft.used:minecraft.carrot_on_a_stick
 scoreboard objectives add {ns}.drop minecraft.dropped:minecraft.carrot_on_a_stick
 

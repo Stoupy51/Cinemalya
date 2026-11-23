@@ -17,7 +17,7 @@ ENTRY_POINTS: dict[str, str] = {
 NO_OPTIONS: tuple[str, ...] = ("editor/start", "editor/stop")
 """ Entry points that read no option, so they are called without a `with` compound. """
 
-SIGNALS: tuple[str, ...] = ("on_launch", "on_finish")
+SIGNALS: tuple[str, ...] = ("on_launch", "on_finish", "on_waypoint")
 """ Function tags the library fires so a datapack can react to a cinematic starting or ending. """
 
 

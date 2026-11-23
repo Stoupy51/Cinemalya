@@ -77,7 +77,77 @@ $data remove storage {ns}:work paths.i$(i).points[0]
 $data modify entity @s Rotation set from storage {ns}:work paths.i$(i).rotations[0]
 $data remove storage {ns}:work paths.i$(i).rotations[0]
 execute if entity @s[tag={ns}.particle] run function {ns}:v{version}/playback/particle
+function {ns}:v{version}/playback/count_pop with storage {ns}:work sel
 $execute unless data storage {ns}:work paths.i$(i).points[0] run function {ns}:v{version}/playback/finish
+""")
+
+	write_versioned_function("playback/count_pop", f"""
+#> count_pop
+#
+# @executed			as & at the cinematic entity, right after a frame was popped
+# @input macro		i : int - the cinematic id
+#
+# @description		Fire the events of the waypoint just reached. Then, for a teleport: a client glides every position change over `teleport_duration` ticks, which would turn a
+#					teleport into a sweep across the map. The server sends a position before the data of the same
+#					tick, so the glide has to be switched off while the frame before the jump is popped, and
+#					switched back on once the jump itself has landed.
+#
+
+scoreboard players add @s {ns}.popped 1
+$execute if score @s {ns}.popped = @s {ns}.event run function {ns}:v{version}/playback/fire_events {{i:$(i)}}
+scoreboard players operation #left {ns}.data = @s {ns}.cut
+scoreboard players operation #left {ns}.data -= @s {ns}.popped
+execute if score #left {ns}.data matches 1 run data modify entity @s teleport_duration set value 0
+$execute if score #left {ns}.data matches 0 run function {ns}:v{version}/playback/land_jump {{i:$(i)}}
+""")
+
+	write_versioned_function("playback/land_jump", f"""
+#> land_jump
+#
+# @executed			as & at the cinematic entity, on the frame that jumped
+# @input macro		i : int - the cinematic id
+#
+# @description		Restore the glide, hold the camera for the ticks the jump asked for, then arm the next jump if any.
+#
+
+execute store result entity @s teleport_duration int 1 run scoreboard players get @s {ns}.smoothing
+$execute store result score @s {ns}.delay run data get storage {ns}:work paths.i$(i).cuts[0].delay
+$data remove storage {ns}:work paths.i$(i).cuts[0]
+$execute store result score @s {ns}.cut run data get storage {ns}:work paths.i$(i).cuts[0].at
+""")
+
+	write_versioned_function("playback/fire_events", f"""
+#> fire_events
+#
+# @executed			as & at the cinematic entity, on a frame that reaches a waypoint with something to fire
+# @input macro		i : int - the cinematic id
+#
+# @description		Run the oldest pending event as the rider, at the camera, then the next one if it lands on this same frame.
+#					A free flying camera has no rider, so it runs them itself.
+#
+
+$data modify storage {ns}:work fire set from storage {ns}:work paths.i$(i).events[0]
+$data remove storage {ns}:work paths.i$(i).events[0]
+execute store result score #waypoint {ns}.data run data get storage {ns}:work fire.wp
+execute if entity @s[tag={ns}.detached] run function {ns}:v{version}/playback/event_signal
+execute unless entity @s[tag={ns}.detached] at @s as @a[tag={ns}.temp,limit=1] run function {ns}:v{version}/playback/event_signal
+$execute store result score @s {ns}.event run data get storage {ns}:work paths.i$(i).events[0].at
+$execute if score @s {ns}.popped = @s {ns}.event run function {ns}:v{version}/playback/fire_events {{i:$(i)}}
+""")
+
+	write_versioned_function("playback/event_signal", f"""
+#> event_signal
+#
+# @input score		#waypoint {ns}.data : the index of the waypoint reached, from 0
+# @input storage	{ns}:work fire.function : optional, the function this waypoint asked for
+#
+
+function #{ns}:v1/signals/on_waypoint
+execute if data storage {ns}:work fire.function run function {ns}:v{version}/playback/event_function with storage {ns}:work fire
+""")
+
+	write_versioned_function("playback/event_function", """
+$function $(function)
 """)
 
 	write_versioned_function("playback/particle", f"""

@@ -102,6 +102,16 @@ execute as <player> run function #cinemalya:v1/launch_path {with:{waypoints:[{ar
 
 That drifts to a near stop on the middle waypoint, holds the beat, then accelerates away.
 
+**Teleports.** A waypoint with `tp:true` is reached by teleport: nothing is flown from the one before it. Circle a building, then cut to the inside and carry on:
+
+```mcfunction
+execute as <player> run function #cinemalya:v1/launch_path {with:{duration:120,waypoints:[{args:[0,70,0]},{args:[10,70,10]},{args:[20,70,0]},{args:[200,64,0,90,0],tp:true,delay:20},{args:[210,64,0]}]}}
+```
+
+The path is cut at every teleport and each piece is sampled on its own, so no curve bends across a cut. They share `duration` in proportion to the segments each one flies, and an `ease` applies to each piece. The camera lands exactly on the `tp` waypoint, then holds there for its `delay` ticks (`0` by default), time for the chunks around it to load. A path takes up to 8 pieces. A teleport under 64 blocks would normally glide across the map on the client, so the camera's `teleport_duration` is cut to 0 the tick before.
+
+**Waypoint events.** A waypoint with `function:"<namespace>:<path>"` runs it when the camera reaches the waypoint, as the player (or as the camera for `gamemode:"none"`), at the camera. Every waypoint also fires [`on_waypoint`](#signals).
+
 <a id="intro"></a>
 ### `#cinemalya:v1/intro`
 
@@ -138,6 +148,7 @@ https://github.com/user-attachments/assets/0180165c-f481-47a7-9d31-23b4a836decd
 | Right click           | Place a keyframe at your eyes, with your rotation        |
 | Left click            | Remove the last keyframe                                 |
 | Sneak + right click   | Preview the path                                         |
+| Swap hands (default F) | Make the last keyframe a teleport, or fly to it again   |
 | Drop it               | Open the export, with the item handed back to you        |
 
 The export shows two `launch_path` commands to copy into a command block: one with absolute positions, one with positions relative to its `execute positioned` coordinates, which start on the first keyframe, so editing them moves the whole path. Both last `duration:200` ticks and move between keyframes with `ease:"linear"`, written in the command so you edit them there (`ease_in`, `ease_out` and `ease_in_out` are the other choices). Every other option is written with its default value too, except `particle` and `spline`. Every editor shares the same path, up to 128 keyframes, and it is cleared when the last of them stops.
@@ -174,6 +185,7 @@ Every argument that ends up bounding a loop is clamped at launch, so a typo cost
 | `duration`, `.duration` | `36000` (30 min) | Clamped, per travel and per waypoint                  |
 | `smoothing`             | `1` to `100`     | Clamped                                               |
 | `waypoints`             | `128`            | The launch is refused and returns `fail`              |
+| Pieces (teleports + 1)  | `8`              | The launch is refused and returns `fail`              |
 | `tags`                  | `32`             | The extras are dropped                                |
 | Frames emitted          | `600`            | The smoothing rises so the path keeps its full length |
 
@@ -184,12 +196,13 @@ A travel asking for more frames than the budget gets a softer `smoothing` instea
 <a id="signals"></a>
 # 📡 Signals
 
-Add your own function to these tags. Both run **as and at the player**.
+Add your own function to these tags. They run **as and at the player**, or as the camera when the path has no player.
 
 | Tag                               | When                                              |
 |-----------------------------------|---------------------------------------------------|
 | `#cinemalya:v1/signals/on_launch` | Just before the camera takes them. Cancel parkour timers, combat tags, anything a teleport should interrupt |
 | `#cinemalya:v1/signals/on_finish` | Once they are set down and their gamemode is back |
+| `#cinemalya:v1/signals/on_waypoint` | Each time the camera reaches a waypoint, at the camera. `#waypoint cinemalya.data` is its index from 0 |
 
 <br>
 

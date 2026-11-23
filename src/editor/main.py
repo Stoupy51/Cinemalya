@@ -1,7 +1,7 @@
 """ The keyframe editor: an item that records camera waypoints where its holder stands and looks.
 
 Right click places a keyframe, left click removes the last one, sneaking and right clicking previews the path,
-and dropping the item opens the export. Every editor shares one path, kept in `<ns>:editor keyframes`.
+swapping hands makes the last keyframe a teleport, and dropping the item opens the export. Every editor shares one path, kept in `<ns>:editor keyframes`.
 """
 # Imports
 from beet import Enchantment
@@ -28,13 +28,15 @@ def editor_item(ns: str) -> str:
 	A zero reach piercing weapon turns every left click, even at air, into a piercing attack whose
 	enchantment effect runs the remove function. `tool` keeps that click from breaking blocks in creative.
 	"""
+	plus: str = ',{text:" + ",color:"white",italic:false},'
 	lore: str = ",".join(
-		f'[{{text:"{key}",color:"yellow",italic:false}},{{text:": {action}",color:"white",italic:false}}]'
-		for key, action in (
-			("Right click", "place a keyframe"),
-			("Left click", "remove the last one"),
-			("Sneak + right click", "preview"),
-			("Drop", "export the command"),
+		"[" + plus.join(f'{{keybind:"{key}",color:"yellow",italic:false}}' for key in keys) + f',{{text:": {action}",color:"white",italic:false}}]'
+		for keys, action in (
+			(("key.use",), "place a keyframe"),
+			(("key.attack",), "remove the last one"),
+			(("key.sneak", "key.use"), "preview"),
+			(("key.swapOffhand",), "reach the last keyframe by teleport, or fly to it again"),
+			(("key.drop",), "export the command"),
 		)
 	)
 	return (
@@ -110,6 +112,54 @@ execute if score #trail_clock {ns}.data matches {TRAIL_PERIOD}.. run function {n
 	write_versioned_function("editor/player", f"""
 execute if score @s {ns}.click matches 1.. at @s run function {ns}:v{version}/editor/on_use
 execute if score @s {ns}.drop matches 1.. at @s run function {ns}:v{version}/editor/on_drop
+execute if items entity @s weapon.offhand {is_editor_item} at @s run function {ns}:v{version}/editor/on_swap
+""")
+
+	write_versioned_function("editor/on_swap", f"""
+#> on_swap
+#
+# @executed			as & at the player who swapped hands with the editor item
+#
+# @description		The swap key is the teleport toggle, so the hands are swapped back through a display holding one of them.
+#
+
+summon item_display ~ ~ ~ {{Tags:["{ns}.swap"]}}
+item replace entity @e[type=item_display,tag={ns}.swap,distance=..1,limit=1] contents from entity @s weapon.mainhand
+item replace entity @s weapon.mainhand from entity @s weapon.offhand
+item replace entity @s weapon.offhand from entity @e[type=item_display,tag={ns}.swap,distance=..1,limit=1] contents
+kill @e[type=item_display,tag={ns}.swap,distance=..1]
+function {ns}:v{version}/editor/toggle_teleport
+""")
+
+	write_versioned_function("editor/toggle_teleport", f"""
+#> toggle_teleport
+#
+# @executed			as & at the player
+#
+# @description		Mark the newest keyframe as reached by teleport, or unmark it. A teleport has no line leading to it.
+#
+
+execute if score #keyframes {ns}.data matches ..1 run return run title @s actionbar {{text:"A teleport needs a keyframe to leave from",color:"red"}}
+execute store result storage {ns}:editor label.n int 1 run scoreboard players get #keyframes {ns}.data
+execute store success score #was_teleport {ns}.data if data storage {ns}:editor keyframes[-1]{{tp:true}}
+execute if score #was_teleport {ns}.data matches 1 run return run function {ns}:v{version}/editor/unmark_teleport
+data modify storage {ns}:editor keyframes[-1].tp set value true
+data remove storage {ns}:editor trail[-1]
+execute as @e[type=text_display,tag={ns}.keyframe] if score @s {ns}.data = #keyframes {ns}.data run function {ns}:v{version}/editor/label_teleport with storage {ns}:editor label
+title @s actionbar [{{text:"Keyframe ",color:"gold"}},{{score:{{name:"#keyframes",objective:"{ns}.data"}},color:"yellow"}},{{text:" is reached by teleport",color:"aqua"}}]
+playsound minecraft:entity.enderman.teleport master @s ~ ~ ~ 0.4 1.4
+""")
+
+	write_versioned_function("editor/unmark_teleport", f"""
+data remove storage {ns}:editor keyframes[-1].tp
+function {ns}:v{version}/editor/trail/add
+execute as @e[type=text_display,tag={ns}.keyframe] if score @s {ns}.data = #keyframes {ns}.data run function {ns}:v{version}/editor/label_text with storage {ns}:editor label
+title @s actionbar [{{text:"Keyframe ",color:"gold"}},{{score:{{name:"#keyframes",objective:"{ns}.data"}},color:"yellow"}},{{text:" is flown to again",color:"gold"}}]
+playsound minecraft:ui.button.click master @s ~ ~ ~ 0.5 0.8
+""")
+
+	write_versioned_function("editor/label_teleport", """
+$data modify entity @s text set value {text:"$(n) TP",color:"aqua",bold:true}
 """)
 
 	write_versioned_function("editor/on_use", f"""
@@ -226,7 +276,7 @@ execute unless items entity @s weapon.mainhand *[custom_data~{{{ns}:{{editor:tru
 execute if score #keyframes {ns}.data matches ..0 run return run title @s actionbar {{text:"No keyframe to remove",color:"red"}}
 execute as @e[type=text_display,tag={ns}.keyframe] if score @s {ns}.data = #keyframes {ns}.data run kill @s
 data remove storage {ns}:editor keyframes[-1]
-execute if score #keyframes {ns}.data matches 2.. run data remove storage {ns}:editor trail[-1]
+execute if score #keyframes {ns}.data matches 2.. unless data storage {ns}:editor keyframes[-1]{{tp:true}} run data remove storage {ns}:editor trail[-1]
 scoreboard players remove #keyframes {ns}.data 1
 title @s actionbar [{{text:"Keyframe removed, ",color:"gold"}},{{score:{{name:"#keyframes",objective:"{ns}.data"}},color:"yellow"}},{{text:" left",color:"gold"}}]
 playsound minecraft:ui.button.click master @s ~ ~ ~ 0.5 0.8

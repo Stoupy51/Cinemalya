@@ -85,7 +85,7 @@ def write_export(ns: str, version: str) -> None:
 #
 
 execute if score #keyframes {ns}.data matches ..1 run return run title @s actionbar {{text:"Place at least two keyframes to export",color:"red"}}
-data modify storage {ns}:editor export set value {{abs:"",rel:"",sep:""}}
+data modify storage {ns}:editor export set value {{abs:"",rel:"",sep:"",tp:""}}
 data modify storage {ns}:editor iter set from storage {ns}:editor keyframes
 execute store result score #x0 {ns}.data run data get storage {ns}:editor keyframes[0].pos[0] 100
 execute store result score #y0 {ns}.data run data get storage {ns}:editor keyframes[0].pos[1] 100
@@ -118,6 +118,8 @@ scoreboard players operation #dy {ns}.data -= #y0 {ns}.data
 scoreboard players operation #dz {ns}.data = #z {ns}.data
 scoreboard players operation #dz {ns}.data -= #z0 {ns}.data
 {"".join(format_number(ns, key) for key in NUMBERS)}
+data modify storage {ns}:editor export.tp set value ""
+execute if data storage {ns}:editor iter[0]{{tp:true}} run data modify storage {ns}:editor export.tp set value ",tp:true"
 function {ns}:v{version}/editor/export/append with storage {ns}:editor export
 data modify storage {ns}:editor export.sep set value ","
 data remove storage {ns}:editor iter[0]
@@ -126,8 +128,8 @@ execute if data storage {ns}:editor iter[0] run function {ns}:v{version}/editor/
 
 	rot: str = f"{number('yaw')},{number('pitch')}"
 	write_versioned_function("editor/export/append", f"""
-$data modify storage {ns}:editor export.abs set value '$(abs)$(sep){{args:[{number("x")},{number("y")},{number("z")},{rot}]}}'
-$data modify storage {ns}:editor export.rel set value '$(rel)$(sep){{at:"~{number("dx")} ~{number("dy")} ~{number("dz")}",rot:[{rot}]}}'
+$data modify storage {ns}:editor export.abs set value '$(abs)$(sep){{args:[{number("x")},{number("y")},{number("z")},{rot}]$(tp)}}'
+$data modify storage {ns}:editor export.rel set value '$(rel)$(sep){{at:"~{number("dx")} ~{number("dy")} ~{number("dz")}",rot:[{rot}]$(tp)}}'
 """)
 
 	write_versioned_function("editor/export/wrap", f"""

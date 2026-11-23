@@ -8,6 +8,9 @@ Each limit below is enforced where the loop is set up, never inside the loop its
 MAX_WAYPOINTS: int = 128
 """ Waypoints one path may hold. A longer list is refused, since the count also drives the control point and segment loops. """
 
+MAX_PIECES: int = 8
+""" Pieces a path may be cut into by teleports. Each piece is sampled on its own and shares the launch budget. """
+
 MAX_TAGS: int = 32
 """ Extra tags copied onto the cinematic entity. Anything past this is dropped rather than looped over. """
 

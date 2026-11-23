@@ -3,7 +3,6 @@ from stewbeet import write_versioned_function
 
 from ..limits import (
 	FRAME_COST,
-	LAUNCH_BUDGET,
 	MIN_SAMPLING_STEP,
 	SAMPLE_COST,
 	WAYPOINT_COST,
@@ -25,7 +24,7 @@ def write_sampling(ns: str, version: str) -> None:
 ## One sample per frame, or fewer when the frames and waypoints leave less of the launch budget
 scoreboard players operation #frames {ns}.data = #duration {ns}.data
 scoreboard players operation #frames {ns}.data /= #smoothing {ns}.data
-scoreboard players set #samples {ns}.data {LAUNCH_BUDGET}
+scoreboard players operation #samples {ns}.data = #launch_budget {ns}.data
 scoreboard players operation #n {ns}.data = #frames {ns}.data
 scoreboard players operation #n {ns}.data *= #{FRAME_COST} {ns}.data
 scoreboard players operation #samples {ns}.data -= #n {ns}.data

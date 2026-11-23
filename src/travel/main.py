@@ -1,9 +1,18 @@
 # Imports
 from stewbeet import Mem, write_versioned_function
 
-from ..limits import MAX_DURATION, MAX_FRAMES, MAX_SMOOTHING, MAX_TAGS, MAX_WAYPOINTS
+from ..limits import (
+	LAUNCH_BUDGET,
+	MAX_DURATION,
+	MAX_FRAMES,
+	MAX_PIECES,
+	MAX_SMOOTHING,
+	MAX_TAGS,
+	MAX_WAYPOINTS,
+)
 from .control import write_control
 from .frames import write_frames
+from .pieces import write_pieces
 from .sampling import write_sampling
 from .waypoints import write_waypoints
 
@@ -162,11 +171,19 @@ execute if score #count {ns}.data matches {MAX_WAYPOINTS + 1}.. run return fail
 # One cinematic per player: a second launch replaces the first instead of fighting over the camera
 execute unless score #mode {ns}.data matches 2 run function {ns}:v{version}/playback/stop_silent
 
-## Build the path
+## Build the path, cut where a waypoint is reached by teleport
+scoreboard players set #pieces {ns}.data 1
+execute if data storage {ns}:work args.waypoints[{{tp:true}}] run function {ns}:v{version}/travel/pieces/count
+execute if score #pieces {ns}.data matches {MAX_PIECES + 1}.. run return fail
 function {ns}:v{version}/travel/waypoints/normalize
-function {ns}:v{version}/travel/control/main
-function {ns}:v{version}/travel/sample/main
-function {ns}:v{version}/travel/frames/main
+scoreboard players set #launch_budget {ns}.data {LAUNCH_BUDGET}
+scoreboard players set #frame_offset {ns}.data 0
+scoreboard players set #first_at {ns}.data 1
+scoreboard players set #wp_offset {ns}.data 0
+execute if score #pieces {ns}.data matches 2.. run function {ns}:v{version}/travel/pieces/main
+execute if score #pieces {ns}.data matches 1 run function {ns}:v{version}/travel/control/main
+execute if score #pieces {ns}.data matches 1 run function {ns}:v{version}/travel/sample/main
+execute if score #pieces {ns}.data matches 1 run function {ns}:v{version}/travel/frames/main
 
 ## Hand over to the entity, tagging the player so the summoned entity can find them
 execute unless score #mode {ns}.data matches 2 run function #{ns}:v1/signals/on_launch
@@ -207,6 +224,11 @@ data modify entity @s Rotation set from storage {ns}:work args.waypoints[0].rot
 data modify entity @s item set value {{id:"minecraft:stone",count:1,components:{{"minecraft:item_model":"minecraft:air"}}}}
 execute if data storage {ns}:work args.particle run function {ns}:v{version}/travel/set_particle
 
+## Teleports and waypoint events in the path: arm the first of each
+scoreboard players set @s {ns}.popped 0
+execute store result score @s {ns}.cut run data get storage {ns}:work frames.cuts[0].at
+execute store result score @s {ns}.event run data get storage {ns}:work frames.events[0].at
+
 ## Give this cinematic its own slot in the path storage
 execute store result storage {ns}:work sel.i int 1 run scoreboard players get @s {ns}.id
 function {ns}:v{version}/travel/store_path with storage {ns}:work sel
@@ -228,6 +250,8 @@ execute unless score #mode {ns}.data matches 2 run function {ns}:v{version}/trav
 $data modify storage {ns}:work paths.i$(i) set value {{}}
 $data modify storage {ns}:work paths.i$(i).points set from storage {ns}:work frames.points
 $data modify storage {ns}:work paths.i$(i).rotations set from storage {ns}:work frames.rotations
+$data modify storage {ns}:work paths.i$(i).events set from storage {ns}:work frames.events
+$execute if data storage {ns}:work frames.cuts[0] run data modify storage {ns}:work paths.i$(i).cuts set from storage {ns}:work frames.cuts
 """)
 
 	write_versioned_function("travel/set_particle", f"""
@@ -328,6 +352,7 @@ def main() -> None:
 	write_control(ns, version)
 	write_sampling(ns, version)
 	write_frames(ns, version)
+	write_pieces(ns, version)
 	write_start(ns, version)
 	write_extra_tags(ns, version)
 

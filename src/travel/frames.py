@@ -10,8 +10,8 @@ def write_frames(ns: str, version: str) -> None:
 #> main
 #
 # @input storage	{ns}:work samples, {ns}:work rot_samples, {ns}:work lengths, {ns}:work bounds
-# @input score		#shared_length, #shared_count {ns}.data
-# @output storage	{ns}:work frames : one entry per playback step
+# @input score		#shared_length, #shared_count, #frame_offset, #first_at, #wp_offset {ns}.data
+# @output storage	{ns}:work frames : one entry per playback step, and the `events` the waypoints fire
 #
 # @description		Walk the travel one frame at a time. Each frame works out how far along the path it
 #					should be, then lands between the two samples around that distance. Time is counted
@@ -19,7 +19,11 @@ def write_frames(ns: str, version: str) -> None:
 #					means playback never computes anything: it just pops.
 #
 
-data modify storage {ns}:work frames set value {{points:[],rotations:[]}}
+data modify storage {ns}:work frames set value {{points:[],rotations:[],events:[]}}
+scoreboard players operation #event_at {ns}.data = #first_at {ns}.data
+scoreboard players operation #event_wp {ns}.data = #wp_offset {ns}.data
+data modify storage {ns}:work sel.i set value 0
+function {ns}:v{version}/travel/frames/event with storage {ns}:work sel
 scoreboard players operation #last_seg {ns}.data = #segments {ns}.data
 scoreboard players remove #last_seg {ns}.data 1
 
@@ -88,6 +92,7 @@ execute if score #budget {ns}.data matches 1.. run function {ns}:v{version}/trav
 # @description		Move on to the segment #time falls in, skipping any too short to hold a frame.
 #
 
+execute if score #seg {ns}.data matches 0.. run function {ns}:v{version}/travel/frames/land_event
 scoreboard players add #seg {ns}.data 1
 execute if score #seg {ns}.data >= #segments {ns}.data run return 0
 scoreboard players operation #seg_start {ns}.data = #seg_end {ns}.data
@@ -106,6 +111,37 @@ scoreboard players operation #seg_end {ns}.data += #seg_span {ns}.data
 function {ns}:v{version}/travel/frames/segment_ease
 
 execute if score #time {ns}.data > #seg_end {ns}.data run function {ns}:v{version}/travel/frames/next_segment
+""")
+
+	write_versioned_function("travel/frames/land_event", f"""
+#> land_event
+#
+# @description		The camera has flown the whole segment, so the waypoint it arrives at lands on the frame just emitted.
+#
+
+execute store result score #event_at {ns}.data run data get storage {ns}:work frames.points
+scoreboard players operation #event_at {ns}.data += #frame_offset {ns}.data
+scoreboard players operation #event_wp {ns}.data = #seg {ns}.data
+scoreboard players add #event_wp {ns}.data 1
+execute store result storage {ns}:work sel.i int 1 run scoreboard players get #event_wp {ns}.data
+scoreboard players operation #event_wp {ns}.data += #wp_offset {ns}.data
+function {ns}:v{version}/travel/frames/event with storage {ns}:work sel
+""")
+
+	write_versioned_function("travel/frames/event", f"""
+#> event
+#
+# @input macro		i : int - the waypoint in the list being built
+# @input score		#event_at {ns}.data : the number of the pop landing on that waypoint
+# @input score		#event_wp {ns}.data : the waypoint's index in the whole path
+#
+# @description		Record that this waypoint fires its `function` and the on_waypoint signal when reached.
+#
+
+data modify storage {ns}:work frames.events append value {{at:0,wp:0}}
+execute store result storage {ns}:work frames.events[-1].at int 1 run scoreboard players get #event_at {ns}.data
+execute store result storage {ns}:work frames.events[-1].wp int 1 run scoreboard players get #event_wp {ns}.data
+$data modify storage {ns}:work frames.events[-1].function set from storage {ns}:work args.waypoints[$(i)].function
 """)
 
 	write_versioned_function("travel/frames/read_duration", f"""
