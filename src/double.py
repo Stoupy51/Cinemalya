@@ -50,6 +50,7 @@ data modify entity @n[type=mannequin,tag={ns}.new] profile set from entity @n[ty
 data modify entity @n[type=mannequin,tag={ns}.new] equipment set from entity @s equipment
 data remove entity @n[type=mannequin,tag={ns}.new] equipment.saddle
 data modify entity @n[type=mannequin,tag={ns}.new] equipment.mainhand set from entity @s SelectedItem
+execute unless data entity @s SelectedItem run data remove entity @n[type=mannequin,tag={ns}.new] equipment.mainhand
 scoreboard players operation @n[type=mannequin,tag={ns}.new] {ns}.id = @s {ns}.id
 tag @n[type=mannequin,tag={ns}.new] add {ns}.double
 tag @n[type=mannequin,tag={ns}.new] remove {ns}.new

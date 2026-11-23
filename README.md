@@ -108,9 +108,9 @@ That drifts to a near stop on the middle waypoint, holds the beat, then accelera
 execute as <player> run function #cinemalya:v1/launch_path {with:{duration:120,waypoints:[{args:[0,70,0]},{args:[10,70,10]},{args:[20,70,0]},{args:[200,64,0,90,0],tp:true,delay:20},{args:[210,64,0]}]}}
 ```
 
-The path is cut at every teleport and each piece is sampled on its own, so no curve bends across a cut. They share `duration` in proportion to the segments each one flies, and an `ease` applies to each piece. The camera lands exactly on the `tp` waypoint, then holds there for its `delay` ticks (`0` by default), time for the chunks around it to load. A path takes up to 8 pieces. A teleport under 64 blocks would normally glide across the map on the client, so the camera's `teleport_duration` is cut to 0 the tick before.
+The path is cut at every teleport and each piece is sampled on its own, so no curve bends across a cut. They share `duration` in proportion to the segments each one flies, and an `ease` applies to each piece. The camera lands exactly on the `tp` waypoint, then holds there for its `delay` ticks (`0` by default), time for the chunks around it to load. A path takes up to 8 pieces. The key is read by presence, so `tp:false` still counts as a teleport: leave it out instead. A teleport under 64 blocks would normally glide across the map on the client, so the camera's `teleport_duration` is cut to 0 the tick before.
 
-**Waypoint events.** A waypoint with `function:"<namespace>:<path>"` runs it when the camera reaches the waypoint, as the player (or as the camera for `gamemode:"none"`), at the camera. Every waypoint also fires [`on_waypoint`](#signals).
+**Waypoint events.** A waypoint with `function:"<namespace>:<path>"` runs it when the camera reaches the waypoint, as the player (or as the camera for `gamemode:"none"`), at the camera. Every waypoint also fires [`on_waypoint`](#signals). The first waypoint fires on the first step, about one block after the starting point.
 
 <a id="intro"></a>
 ### `#cinemalya:v1/intro`
@@ -166,7 +166,7 @@ The export shows two `launch_path` commands to copy into a command block: one wi
 | `ease`             | string | `"linear"`  | `linear`, `ease_in`, `ease_out`, `ease_in_out`            |
 | `spline`           | string | auto        | `bezier` (2 waypoints) or `catmull_rom` (more)            |
 | `arc_side`         | float  | `0.0`       | Sideways swing, as a fraction of half the distance        |
-| `arc_height`       | float  | `20.0`      | How far above the higher end the arc peaks                |
+| `arc_height`       | float  | `0.0`       | How far above the higher end the arc peaks, see below     |
 | `particle`         | string | none        | Particle trailed behind the camera                        |
 | `gamemode`         | string | `"restore"` | `restore`, `keep` (already spectator), `none` (no player) |
 | `mode`             | string | `"spectator"` | `spectator`, or `ride` to sit on the camera in your own gamemode, see [ride](#ride) |
@@ -178,6 +178,8 @@ The export shows two `launch_path` commands to copy into a command block: one wi
 | `yaw` / `pitch`    | float  | target's    | Override the ending rotation                              |
 
 Per entry point: `launch` takes `x`/`y`/`z`, `launch_at_entity` takes `target`, `launch_path` takes `waypoints`, `launch_here` takes neither. `yaw`/`pitch` do not apply to `launch_path`, where each waypoint carries its own `rot`.
+
+**Arc.** `arc_height:0.0` flies two-waypoint travels (`launch`, `launch_here`, `launch_at_entity`, or a `launch_path` of two waypoints) in a straight line. A value like `10` to `20` lifts the camera over the middle of a long travel, which usually looks better when the ends are far apart or at different heights. A path through three or more waypoints follows its own curve and ignores it.
 
 <a id="limits"></a>
 ### Limits
