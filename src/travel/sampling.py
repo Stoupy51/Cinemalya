@@ -3,6 +3,7 @@ from stewbeet import write_versioned_function
 
 from ..limits import (
 	FRAME_COST,
+	MAX_ARC_SAMPLES,
 	MIN_SAMPLING_STEP,
 	SAMPLE_COST,
 	WAYPOINT_COST,
@@ -35,6 +36,7 @@ scoreboard players operation #samples {ns}.data /= #{SAMPLE_COST} {ns}.data
 execute if score #samples {ns}.data > #frames {ns}.data run scoreboard players operation #samples {ns}.data = #frames {ns}.data
 execute if score #samples {ns}.data matches ..32 run scoreboard players set #samples {ns}.data 32
 execute if score #samples {ns}.data matches 400.. run scoreboard players set #samples {ns}.data 400
+execute if score #segments {ns}.data matches 1 if score #curve {ns}.data matches 0 if score #samples {ns}.data matches {MAX_ARC_SAMPLES + 1}.. run scoreboard players set #samples {ns}.data {MAX_ARC_SAMPLES}
 
 ## Sampling step, in millionths, spread over the whole curve
 # The floor is what keeps the sampler terminating: Bookshelf reads the step back as an int, so a smaller

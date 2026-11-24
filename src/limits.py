@@ -28,11 +28,14 @@ LAUNCH_BUDGET: int = 60000
 Past that limit Minecraft drops the rest of the launch silently, so no camera ever appears.
 """
 
-SAMPLE_COST: int = 165
+SAMPLE_COST: int = 139
 """ Commands one sample costs: Bookshelf's position and rotation samplers, the arc length, the walk over it. """
 
-FRAME_COST: int = 48
+FRAME_COST: int = 55
 """ Commands one frame costs to time, ease and interpolate. """
+
+MAX_ARC_SAMPLES: int = 32
+""" Samples a single bezier arc takes, whatever its frame count. At 32 the polyline stays within 0.06 block of the curve. """
 
 WAYPOINT_COST: int = 200
 """ Commands one waypoint costs before sampling, plus Bookshelf's setup of its segment. """
