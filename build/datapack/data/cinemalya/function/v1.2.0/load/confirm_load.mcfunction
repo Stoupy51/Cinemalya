@@ -30,9 +30,9 @@ scoreboard players set #-2 cinemalya.data -2
 scoreboard players set #-1 cinemalya.data -1
 scoreboard players set #2 cinemalya.data 2
 scoreboard players set #20 cinemalya.data 20
-scoreboard players set #55 cinemalya.data 55
+scoreboard players set #48 cinemalya.data 48
 scoreboard players set #100 cinemalya.data 100
-scoreboard players set #139 cinemalya.data 139
+scoreboard players set #165 cinemalya.data 165
 scoreboard players set #200 cinemalya.data 200
 scoreboard players set #600 cinemalya.data 600
 scoreboard players set #1000 cinemalya.data 1000

@@ -16,16 +16,15 @@ scoreboard players operation #frames cinemalya.data = #duration cinemalya.data
 scoreboard players operation #frames cinemalya.data /= #smoothing cinemalya.data
 scoreboard players operation #samples cinemalya.data = #launch_budget cinemalya.data
 scoreboard players operation #n cinemalya.data = #frames cinemalya.data
-scoreboard players operation #n cinemalya.data *= #55 cinemalya.data
+scoreboard players operation #n cinemalya.data *= #48 cinemalya.data
 scoreboard players operation #samples cinemalya.data -= #n cinemalya.data
 scoreboard players operation #n cinemalya.data = #count cinemalya.data
 scoreboard players operation #n cinemalya.data *= #200 cinemalya.data
 scoreboard players operation #samples cinemalya.data -= #n cinemalya.data
-scoreboard players operation #samples cinemalya.data /= #139 cinemalya.data
+scoreboard players operation #samples cinemalya.data /= #165 cinemalya.data
 execute if score #samples cinemalya.data > #frames cinemalya.data run scoreboard players operation #samples cinemalya.data = #frames cinemalya.data
 execute if score #samples cinemalya.data matches ..32 run scoreboard players set #samples cinemalya.data 32
 execute if score #samples cinemalya.data matches 400.. run scoreboard players set #samples cinemalya.data 400
-execute if score #segments cinemalya.data matches 1 if score #curve cinemalya.data matches 0 if score #samples cinemalya.data matches 33.. run scoreboard players set #samples cinemalya.data 32
 
 ## Sampling step, in millionths, spread over the whole curve
 # The floor is what keeps the sampler terminating: Bookshelf reads the step back as an int, so a smaller
